@@ -1,0 +1,17 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    match /artifacts/plant-book-84803/users/{uid}/plants/{plantId}/photo.jpg {
+      allow get: if owner(uid);
+      allow list: if false;
+      allow create, update: if owner(uid)
+        && plantId.matches('[A-Za-z0-9_-]{1,240}')
+        && request.resource.size > 0 && request.resource.size <= 2097152
+        && request.resource.contentType == 'image/jpeg'
+        && request.resource.metadata.keys().hasOnly([]);
+      allow delete: if owner(uid);
+    }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function validText(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.description is string && data.description.size() <= 10000;
+    }
+    function validLocation(data) {
+      return !('location' in data) || (
+        data.location is map
+        && data.location.keys().hasAll(['lat', 'lng'])
+        && data.location.keys().hasOnly(['lat', 'lng'])
+        && data.location.lat is number && data.location.lng is number
+        && data.location.lat >= -90 && data.location.lat <= 90
+        && data.location.lng >= -180 && data.location.lng <= 180
+      );
+    }
+    function validIdentification(data) {
+      return !('identification' in data) || (
+        data.identification is map
+        && data.identification.keys().hasAll(['provider','scientificName','commonName','score','organ','identifiedAt'])
+        && data.identification.keys().hasOnly(['provider','scientificName','commonName','score','organ','identifiedAt'])
+        && data.identification.provider == 'plantnet'
+        && data.identification.scientificName is string && data.identification.scientificName.size()>0 && data.identification.scientificName.size()<=200
+        && data.identification.commonName is string && data.identification.commonName.size()<=200
+        && data.identification.score is number && data.identification.score>=0 && data.identification.score<=1
+        && data.identification.organ in ['auto','leaf','flower','fruit','bark']
+        && data.identification.identifiedAt is int && data.identification.identifiedAt>0
+      );
+    }
+    function validLegacy(data) {
+      return data.keys().hasAll(['name', 'description', 'imageData', 'createdAt'])
+        && data.keys().hasOnly(['name', 'description', 'imageData', 'createdAt', 'location', 'identification'])
+        && validText(data)
+        && data.imageData is string && data.imageData.size() > 0
+        && data.imageData.size() < 1048576
+        && data.imageData.matches('data:image/(jpeg|png);base64,.*')
+        && data.createdAt is int && data.createdAt > 0
+        && validLocation(data);
+    }
+    function validStorage(data, uid, plantId) {
+      return data.keys().hasAll(['name', 'description', 'createdAt', 'schemaVersion', 'imagePath', 'imageType', 'imageBytes', 'imageGeneration'])
+        && data.keys().hasOnly(['name', 'description', 'createdAt', 'schemaVersion', 'imagePath', 'imageType', 'imageBytes', 'imageGeneration', 'location', 'identification'])
+        && validText(data) && validLocation(data)
+        && data.createdAt is int && data.createdAt > 0
+        && data.schemaVersion == 2
+        && plantId.matches('[A-Za-z0-9_-]{1,240}')
+        && data.imagePath == 'artifacts/plant-book-84803/users/' + uid + '/plants/' + plantId + '/photo.jpg'
+        && data.imageGeneration is string && data.imageGeneration.matches('[0-9]{1,30}')
+        && data.imageType == 'image/jpeg'
+        && data.imageBytes is int && data.imageBytes > 0 && data.imageBytes <= 2097152;
+    }
+    function validRecord(data, uid, plantId) {
+      return validIdentification(data) && (validLegacy(data) || validStorage(data, uid, plantId));
+    }
+    match /artifacts/plant-book-84803/users/{uid}/plants/{plantId} {
+      allow read, delete: if isOwner(uid);
+      allow create: if isOwner(uid) && validRecord(request.resource.data, uid, plantId);
+      allow update: if isOwner(uid)
+        && validRecord(request.resource.data, uid, plantId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'description', 'identification'])
+        && (!('identification' in request.resource.data) || ('identification' in resource.data && request.resource.data.identification == resource.data.identification));
+    }
+    // Every other path is denied unless a separate explicit rule is added.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

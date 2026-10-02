@@ -1,0 +1,11 @@
+[
+  {
+    "origin": [
+      "https://YOUR-SITE-DOMAIN"
+    ],
+    "method": [
+      "GET"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

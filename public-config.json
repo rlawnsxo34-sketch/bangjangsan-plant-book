@@ -1,0 +1,16 @@
+{
+  "firebase": {
+    "apiKey": "AIzaSyCZjnNVl9MkH2nqQ9O0vhKibiwGl-0ysRU",
+    "authDomain": "plant-book-84803.firebaseapp.com",
+    "projectId": "plant-book-84803",
+    "storageBucket": "plant-book-84803.firebasestorage.app",
+    "messagingSenderId": "76598088689",
+    "appId": "1:76598088689:web:334a3735566fa37c01aa50"
+  },
+  "functionsRegion": "asia-northeast3",
+  "appCheckSiteKey": "",
+  "identificationEnabled": true,
+  "emulators": {
+    "enabled": false
+  }
+}

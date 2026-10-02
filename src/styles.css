@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body { -webkit-tap-highlight-color: transparent; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+button { min-height: 44px; }
+button[aria-label$="수정"],button[aria-label$="삭제"],button[aria-label$="닫기"] { min-width:44px; }
+:focus-visible { outline: 3px solid #065f46 !important; outline-offset: 3px; box-shadow: 0 0 0 2px white; }
+.pb-safe { padding-bottom: max(12px,env(safe-area-inset-bottom)); }
+.skip-link { position:fixed;top:8px;left:8px;z-index:200;background:white;color:#064e3b;padding:12px;border:2px solid #065f46;transform:translateY(-150%); }
+.skip-link:focus { transform:translateY(0); }
+.hide-scrollbar { scrollbar-width:thin; }
+@media (prefers-reduced-motion: reduce) {
+ *,*::before,*::after { animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important; }
+}
