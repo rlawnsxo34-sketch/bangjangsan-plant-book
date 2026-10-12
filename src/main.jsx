@@ -1,18 +1,10 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import './auth-flow.js';
 import './photo-flow.js';
-import './view-flow.js';
-import './storage-flow.js';
-import './identify-flow.js';
 import App from './App.jsx';
-import {initializeRuntime} from './runtime.js';
-try{
-  initializeRuntime(window.plantConfig);
-  createRoot(document.getElementById('root')).render(<App/>);
-}catch(_){
-  const root=document.getElementById('root');
-  root.replaceChildren();const heading=document.createElement('h1');heading.textContent='방장산 식물 도감';
-  const message=document.createElement('p');message.setAttribute('role','alert');message.textContent='도감을 시작하지 못했습니다. 연결을 확인한 뒤 새로고침해주세요.';
-  root.append(heading,message);
+class Boundary extends React.Component{
+ constructor(props){super(props);this.state={error:false};}
+ static getDerivedStateFromError(){return {error:true};}
+ render(){return this.state.error?<main className="p-6"><h1 className="text-xl font-bold">도감을 열지 못했습니다.</h1><p className="mt-3">기존 브라우저 데이터를 지우지 말고 새로고침해주세요.</p><button className="mt-4 rounded-xl bg-emerald-800 px-4 py-3 text-white" onClick={()=>location.reload()}>다시 열기</button></main>:this.props.children;}
 }
+createRoot(document.getElementById('root')).render(<Boundary><App/></Boundary>);

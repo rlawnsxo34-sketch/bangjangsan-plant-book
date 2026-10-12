@@ -1,6 +1,7 @@
 node_modules/
-functions/node_modules/
 .firebase/
 *-debug.log*
 .env
 .env.*
+
+bangjangsan-backup-*.json
