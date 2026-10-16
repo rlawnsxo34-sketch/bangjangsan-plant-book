@@ -1,0 +1,3 @@
+Official powered by Pl@ntNet logo source: https://my.plantnet.org/images/powered-by-plantnet-light.svg
+Attribution reference: https://my.plantnet.org/terms_of_use
+Included unchanged for API attribution.

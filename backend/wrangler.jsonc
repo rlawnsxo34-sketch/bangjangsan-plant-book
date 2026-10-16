@@ -1,0 +1,7 @@
+{
+ "name":"forest-plant-identify", "main":"worker.mjs", "compatibility_date":"2026-10-13",
+ "vars":{"FIREBASE_PROJECT_ID":"plant-book-84803","FIREBASE_API_KEY":"AIzaSyCZjnNVl9MkH2nqQ9O0vhKibiwGl-0ysRU","ALLOWED_ORIGINS":"https://plant-book-84803.web.app,https://plant-book-84803.firebaseapp.com,http://127.0.0.1:4173","GLOBAL_DAILY_LIMIT":"20","USER_DAILY_LIMIT":"5"},
+ "durable_objects":{"bindings":[{"name":"QUOTA","class_name":"IdentificationQuota"}]},
+ "migrations":[{"tag":"v1","new_sqlite_classes":["IdentificationQuota"]}],
+ "observability":{"enabled":false}
+}

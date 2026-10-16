@@ -1,7 +1,7 @@
 {
-  "inputCount": 4553,
-  "htmlBytes": 2796799,
-  "firebaseRuntimeIncluded": false,
-  "storage": "IndexedDB",
+  "inputCount": 4581,
+  "htmlBytes": 3466347,
+  "firebaseRuntimeIncluded": true,
+  "storage": "IndexedDB + private Firestore dev photos",
   "sparkCompatible": true
 }

@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {createEpoch,validateDraft,validatePhoto,cloudMessage,PHOTO_BYTES} from '../src/cloud-model.js';
+const row=()=>({id:'valid-id',name:'이름 모름',centerName:'시연 숲체원',description:'',createdAt:1,updatedAt:1,location:null,locationSource:'center_only'});
+test('location omission is explicit, album GPS cannot be silently supplied',()=>{assert.equal(validateDraft(row()).location,null);assert.throws(()=>validateDraft({...row(),locationSource:'gps'}));assert.throws(()=>validateDraft({...row(),location:{lat:35,lng:126}}));});
+test('coordinates and required institution are validated',()=>{assert.throws(()=>validateDraft({...row(),centerName:' '}));assert.throws(()=>validateDraft({...row(),location:{lat:NaN,lng:126},locationSource:'map'}));assert.throws(()=>validateDraft({...row(),location:{lat:91,lng:126},locationSource:'map'}));assert.doesNotThrow(()=>validateDraft({...row(),location:{lat:35,lng:126},locationSource:'map'}));});
+test('stable IDs and note bounds are enforced',()=>{assert.throws(()=>validateDraft({...row(),id:'../other'}));assert.throws(()=>validateDraft({...row(),description:'x'.repeat(1001)}));});
+test('photo validation rejects non JPEG, malformed and oversized payloads',()=>{assert.equal(validatePhoto('data:image/jpeg;base64,/9j/2Q=='),4);assert.throws(()=>validatePhoto('data:image/png;base64,/9j/2Q=='));assert.throws(()=>validatePhoto('data:image/jpeg;base64,AAAA'));assert.throws(()=>validatePhoto('data:image/jpeg;base64,'+btoa('\xff\xd8'+'x'.repeat(PHOTO_BYTES)+'\xff\xd9')));});
+test('account epochs discard responses from previous session',()=>{const e=createEpoch(),old=e.next();assert.equal(e.isCurrent(old),true);e.next();assert.equal(e.isCurrent(old),false);});
+test('permission and quota errors have usable messages',()=>{assert.match(cloudMessage({code:'permission-denied'}),/규칙/);assert.match(cloudMessage({code:'resource-exhausted'}),/한도/);assert.match(cloudMessage({code:'auth/invalid-credential'}),/비밀번호/);});

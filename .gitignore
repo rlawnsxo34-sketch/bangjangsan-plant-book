@@ -5,3 +5,7 @@ node_modules/
 .env.*
 
 bangjangsan-backup-*.json
+
+.dev.vars
+.dev.vars.*
+backend/.wrangler/

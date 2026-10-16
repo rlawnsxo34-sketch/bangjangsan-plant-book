@@ -1,22 +1,5 @@
-방장산 식물 도감 — Spark 개발용 시작 안내
-
-이번 ZIP의 내용물을 프로젝트 폴더에 넣습니다.
-package.json과 firebase.json이 폴더 바로 아래에 있어야 합니다.
-이전 프로젝트는 먼저 복사해 보관하세요.
-
-파일 탐색기에서 프로젝트 폴더 열기 → 주소창에 cmd → Enter
-한 줄씩 실행:
-  npm ci
-  npm run build
-  npm run preview
-표시된 http://127.0.0.1:4173 주소에서 시험합니다.
-
-Firebase Hosting에 배포:
-  firebase deploy --only hosting --project plant-book-84803
-로그인하지 않았다면 먼저 firebase login --no-localhost 실행
-
-이 버전에는 Pl@ntNet 키·App Check·Storage·Functions 설정이 필요 없습니다.
-이름은 직접 입력하며 사진과 기록은 해당 브라우저 안에 저장됩니다.
-[백업·복원] 메뉴에서 JSON 파일을 내려받아 보관하세요.
-
-상세 내용: README.txt
+ㅇㄱㅁㅇ v13 — 첫 관찰 기관 선택
+현재 적용 순서는 CENTER_SELECTION_UPDATE.txt를 따르세요.
+앱 빌드 → Firestore 규칙 배포 → Hosting 배포 순서입니다.
+v12 서버를 이미 배포했다면 Cloudflare는 재배포하지 않습니다.
+한글 이름·후보 비교 사진·모바일 UI를 포함한 전체 프로젝트입니다.

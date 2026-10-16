@@ -1,0 +1,5 @@
+PASS: Production settings have emulators disabled and blank apiKey/appId.
+PASS: Production CSP hash matches built script and contains no emulator endpoints.
+PASS: Actual production HTML browser shows configuration guidance, disables account login until configured, preserves local app, and made no external requests before configuration.
+Visual check: Korean text and mobile login/settings guidance readable at 390px.
+Live Firebase deploy and physical camera/GPS were not performed.

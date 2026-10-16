@@ -1,3 +1,4 @@
+import {REFERENCE_IMAGE_ORIGIN} from './backend/reference-images.mjs';
 import {build} from 'esbuild';
 import {readFile,writeFile,mkdir,cp,rm} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
@@ -22,9 +23,12 @@ for(const file of result.outputFiles.filter(file=>file.path.endsWith('.LEGAL.txt
 await writeFile('dist/FONT-LICENSE.txt',await readFile('node_modules/@fontsource/noto-sans-kr/LICENSE'));
 await rm('dist/styles.css');
 const hash=value=>"'sha256-"+createHash('sha256').update(value).digest('base64')+"'";
-const csp=["default-src 'self'","script-src 'self' "+hash(js),"style-src 'self' 'unsafe-inline'","font-src 'self' data:","img-src 'self' data: blob:","connect-src 'none'","frame-src 'none'","object-src 'none'","base-uri 'self'","frame-ancestors 'none'"].join('; ');
-const firebase={};
+const cfg=JSON.parse(await readFile('public-config.json','utf8'));
+let aiConnect='';if(cfg.identifyEndpoint){const endpoint=new URL(cfg.identifyEndpoint);if(endpoint.protocol!=='https:'||endpoint.pathname!=='/identify'||endpoint.search||endpoint.hash||endpoint.username||endpoint.password)throw new Error('identifyEndpoint must be HTTPS /identify');aiConnect=' '+endpoint.origin;}
+const emulatorConnect=cfg.emulators?.enabled?' http://127.0.0.1:8080 http://127.0.0.1:9099':'';
+const csp=["default-src 'self'","script-src 'self' "+hash(js),"style-src 'self' 'unsafe-inline'","font-src 'self' data:","img-src 'self' data: blob: "+REFERENCE_IMAGE_ORIGIN,"connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com"+emulatorConnect+aiConnect,"frame-src 'none'","object-src 'none'","base-uri 'self'","frame-ancestors 'none'"].join('; ');
+const firebase={firestore:{rules:'firestore.rules',indexes:'firestore.indexes.json'}};
 firebase.hosting={public:'dist',ignore:['firebase.json','**/.*','**/node_modules/**'],headers:[{source:'**',headers:[{key:'Content-Security-Policy',value:csp},{key:'X-Content-Type-Options',value:'nosniff'},{key:'Referrer-Policy',value:'no-referrer'},{key:'X-Frame-Options',value:'DENY'},{key:'Permissions-Policy',value:'camera=(self), geolocation=(self), microphone=()'},{key:'Cache-Control',value:'no-store'}]}]};
 await writeFile('firebase.json',JSON.stringify(firebase,null,2)+'\n');
-await writeFile('build-meta.json',JSON.stringify({inputCount:Object.keys(result.metafile.inputs).length,htmlBytes:Buffer.byteLength(html),firebaseRuntimeIncluded:false,storage:'IndexedDB',sparkCompatible:true},null,2)+'\n');
+await writeFile('build-meta.json',JSON.stringify({inputCount:Object.keys(result.metafile.inputs).length,htmlBytes:Buffer.byteLength(html),firebaseRuntimeIncluded:true,storage:'IndexedDB + private Firestore dev photos',sparkCompatible:true},null,2)+'\n');
 console.log('Production HTML built:',Buffer.byteLength(html),'bytes; no runtime Babel/Tailwind CDN.');

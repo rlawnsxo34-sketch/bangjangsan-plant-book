@@ -1,0 +1,144 @@
+Firebase Auth/Firestore는 demo 에뮬레이터. 브라우저 AI 응답은 모의 응답. 예상한 권한 거부 로그가 포함됨.
+⚠  emulators: You are not currently authenticated so some features may not work correctly. Please run firebase login to authenticate the CLI.
+i  emulators: Starting emulators: auth, firestore
+i  emulators: Detected demo project ID "demo-forest-book", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
+i  firestore: Firestore Emulator logging to firestore-debug.log
+✔  firestore: Firestore Emulator UI websocket is running on 9150.
+i  Running script: node --test tests/security-rules.test.mjs && node --test tests/sharing-rules.test.mjs && node ../tests/ai-browser.cjs && node ../tests/sharing-browser.cjs
+✔ owner writes atomically paired private metadata and photo (3112.039229ms)
+[2026-10-13T06:16:34.110Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076c3 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+✔ other account cannot read photo, metadata, list or write (121.832028ms)
+[2026-10-13T06:16:34.195Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076c5 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.245Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076c7 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+✔ anonymous and unauthenticated reads and writes are denied (133.001814ms)
+[2026-10-13T06:16:34.283Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076c0 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L26:21 for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:34.312Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076c8 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L37:21 for 'create' @ L37, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L43, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L37, false for 'create' @ L198, false for 'create' @ L201
+✔ partial metadata or photo create is denied (67.012576ms)
+[2026-10-13T06:16:34.405Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076c9 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.424Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076ca error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.443Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076cb error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.466Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076cc error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+✔ allowed edit increments revision; stale writes and protected fields denied (154.101384ms)
+[2026-10-13T06:16:34.482Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076cd error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'update' @ L43, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.496Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076ce error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L33:21 for 'delete' @ L33, false for 'delete' @ L198, false for 'delete' @ L201, false for 'delete' @ L33, false for 'delete' @ L198, false for 'delete' @ L201
+[2026-10-13T06:16:34.510Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076cf error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L44:21 for 'delete' @ L44, false for 'delete' @ L198, false for 'delete' @ L201, false for 'delete' @ L44, false for 'delete' @ L198, false for 'delete' @ L201
+✔ photo updates and separate delete are denied; atomic delete succeeds (62.92466ms)
+[2026-10-13T06:16:34.548Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d0 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.564Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d1 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.604Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d2 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L26:21 for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L37, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L43, false for 'update' @ L198, false for 'update' @ L201
+✔ invalid coordinates, extra roles and oversized photos denied (74.242105ms)
+[2026-10-13T06:16:34.622Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d3 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.636Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d4 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L198, false for 'update' @ L201
+✔ review grants and public paths remain denied (31.510992ms)
+✔ previous delivered namespace retains owner-only access (55.706337ms)
+[2026-10-13T06:16:34.758Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d5 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L26, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:34.785Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x802076d6 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+✔ AI selection is user metadata; invalid score or replacement is denied and manual edits can clear it (118.946591ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4269.255325
+[2026-10-13T06:16:37.354Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073574 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'create' @ L89, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L89, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:37.379Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073575 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'update' @ L85, false for 'update' @ L198, false for 'update' @ L201
+✔ active center list is publicly readable; grants cannot be self-created (2055.002412ms)
+✔ share request contains verified photo/name snapshot, no private coordinates (277.994661ms)
+✔ unapproved request and photo cannot be read by visitors or other users (440.269104ms)
+✔ institution reviewer reads queue snapshot but cannot read personal source (1255.6742ms)
+[2026-10-13T06:16:39.534Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073576 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L102:22 for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:39.577Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207357c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L102:22 for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201
+✔ author cannot publish, and different institution cannot approve (224.083317ms)
+[2026-10-13T06:16:39.646Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207357d error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L94:21 for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:39.662Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207357e error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L94:21 for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:39.686Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207357f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L94:21 for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:39.709Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073580 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L102:22 for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:39.734Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073581 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L102:22 for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:39.759Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073582 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201
+✔ forged snapshot, injected exact location and audit-free approvals are denied (179.977011ms)
+[2026-10-13T06:16:39.864Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073583 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L102:22 for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201
+✔ approval publishes allowed fields and immutable review history atomically (105.049876ms)
+[2026-10-13T06:16:39.879Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073585 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L28:21 for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L28, false for 'update' @ L198, false for 'update' @ L201
+✔ old client cannot edit approved source without withdrawal (15.523535ms)
+✔ owner withdrawal removes public photo copy and preserves private original (62.888719ms)
+[2026-10-13T06:16:40.015Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073588 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L102:22 for 'create' @ L102, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201
+[2026-10-13T06:16:40.034Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073586 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L94:21 for 'create' @ L94, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, false for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201
+✔ approval after pending source mutation/withdrawal is denied (91.480436ms)
+✔ rejection provides reason without publishing and author can resubmit (232.62282ms)
+[2026-10-13T06:16:40.315Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207358a error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'update' @ L111, false for 'update' @ L198, false for 'update' @ L201
+[2026-10-13T06:16:40.327Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207358b error. Code: 7 Message: 7 PERMISSION_DENIED: 
+false for 'delete' @ L111, false for 'delete' @ L198, false for 'delete' @ L201
+✔ review history cannot be edited/deleted by author or reviewer (59.919953ms)
+[2026-10-13T06:16:40.397Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x52073589 error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L129:21 for 'delete' @ L129, false for 'delete' @ L198, false for 'delete' @ L201, false for 'delete' @ L129, false for 'delete' @ L198, false for 'delete' @ L201
+[2026-10-13T06:16:40.403Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207358c error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L129:21 for 'delete' @ L129, false for 'delete' @ L198, false for 'delete' @ L201, false for 'delete' @ L129, false for 'delete' @ L198, false for 'delete' @ L201
+✔ public copies cannot be silently removed while request remains approved (75.854671ms)
+✔ source edit removes public copy in same atomic operation (55.305428ms)
+[2026-10-13T06:16:40.498Z]  @firebase/firestore: Firestore (10.8.1): GrpcConnection RPC 'Write' stream 0x5207358f error. Code: 7 Message: 7 PERMISSION_DENIED: 
+evaluation error at L96:6 for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201, evaluation error at L116:28 for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, evaluation error at L116:28 for 'update' @ L116, false for 'update' @ L198, false for 'update' @ L201, false for 'create' @ L116, false for 'create' @ L198, false for 'create' @ L201, false for 'update' @ L96, false for 'update' @ L198, false for 'update' @ L201
+✔ old review ID cannot be reused for a new approval (38.527467ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5562.029552
+PASS: consent required; candidate selection persisted; manual edit clears AI metadata.
+PASS: cancelled late response does not restore old candidates.
+PASS: identification failure still permits manual save.
+PASS: 320px layout and tested WCAG checks.
+PASS 1: real author account stores private GPS/photo/memo
+PASS 2: explicit unchecked consent and pending record hidden from unauthenticated visitor
+PASS 3: separate reviewer approval enables public photo while exact GPS, email and personal memo stay private
+PASS 4: owner withdraws approved record; fresh public query removes photo and record
+PASS 5: rejection reason appears only to author; record remains unpublished
+PASS 6: editing private original automatically withdraws previous public copy
+PASS 7: reviewer UI is scoped to assigned institution
+PASS 8: mobile width and tested WCAG accessibility checks
+PASS 9: no page rendering exceptions
+All 9 sharing browser checks PASS.
+✔  Script exited successfully (code 0)
+i  emulators: Shutting down emulators.
+i  firestore: Stopping Firestore Emulator
+i  auth: Stopping Authentication Emulator
+i  hub: Stopping emulator hub
+i  logging: Stopping Logging Emulator

@@ -1,0 +1,8 @@
+v11 validation (2026-10-16)
+PASS app tests: 42/42.
+PASS backend tests: 5/5, actual local Worker/DO engine with mocked external responses.
+PASS production build.
+PASS Wrangler deploy --dry-run: bundle produced without deployment.
+PASS name pairs checked against NIBR PDF source text, 20 exact scientific names.
+No live Pl@ntNet, Google authentication, Cloudflare/Firebase deployment or physical mobile tests performed.
+Old logs are historical only. Live language coverage is not claimed.

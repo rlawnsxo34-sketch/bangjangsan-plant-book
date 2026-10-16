@@ -1,0 +1,154 @@
+v9 AI 식물 후보 기능 설정 — 처음부터 따라 하기
+작성일: 2026-10-13
+
+구성
+Firebase Spark: 기존 이메일 로그인, 개인 사진·기록, 기관별 공유, Hosting.
+Cloudflare Workers Free + SQLite Durable Object: 비밀 키 보관, 로그인 확인, 호출 한도/중복 방지.
+Pl@ntNet API: 사진 식별 후보 제공. 현재 계정의 요금·약관·한도를 발급 화면에서 확인하세요.
+사용할 계정·키·실제 배포 설정은 이 작업에서 생성하거나 변경하지 않았습니다.
+
+1. 기존 프로젝트 백업과 v9 적용
+프로젝트 폴더와 기기 도감 JSON을 백업합니다.
+새 ZIP 내용물을 기존 bangjangsan-plant-book 폴더에 적용합니다.
+기존 .git과 기존 Firebase 공개 설정값은 유지합니다.
+이번 public-config.json에는 identifyEndpoint라는 항목이 새로 추가됩니다.
+기존 Firebase값을 유지하면서 그 항목을 추가해야 합니다.
+
+2. Pl@ntNet 비밀 API 키 받기
+https://my.plantnet.org/ 에 접속합니다.
+Sign up으로 계정을 만들고 사이트가 요청하는 이메일 확인 등을 완료합니다.
+이미 계정/키가 있다면 새로 발급할 필요 없이 사용 가능한 기존 키를 이용합니다.
+로그인 후 https://my.plantnet.org/settings/api-key 를 엽니다.
+키가 없다면 화면의 생성 기능으로 private API key를 생성합니다.
+이번 방식은 서버에서 호출하므로 'expose my API key'를 켜서 브라우저에 공개하지 않습니다.
+이미 공개/IP 제한 기능을 켰다면 서버 호출이 가능한지 키 설정을 확인합니다.
+키는 다음 5번의 secret 입력에만 사용합니다.
+public-config.json, wrangler.jsonc, HTML, GitHub, 발표자료에는 넣지 않습니다.
+현재 무료 계정 조건/요청 한도와 기관의 외부 서비스 이용 조건을 확인한 뒤 실제 사진으로 사용합니다.
+도감의 식별 영역에는 공식 powered by Pl@ntNet 로고와 링크를 포함했습니다.
+
+3. Cloudflare 무료 계정 준비
+https://dash.cloudflare.com/ 에서 계정을 생성하거나 기존 계정으로 로그인합니다.
+Workers Free를 사용합니다. 이 단계에 자체 도메인 구매는 필요하지 않습니다.
+이 코드의 Durable Object는 SQLite 방식으로 설정되어 있습니다.
+서버와 저장소는 각 서비스의 무료 사용량 안에서 개발용으로 시험합니다.
+기존 Firebase 프로젝트를 Blaze로 바꾸는 작업은 없습니다.
+
+4. 서버 설정 파일 채우기
+프로젝트 폴더의 backend/wrangler.jsonc를 메모장으로 엽니다.
+FIREBASE_PROJECT_ID: 기존 Firebase 프로젝트 ID(예: plant-book-84803).
+FIREBASE_API_KEY: 기존 public-config.json의 firebase.apiKey와 같은 공개 Firebase 키.
+ALLOWED_ORIGINS: 실제 웹사이트 주소를 쉼표로 구분. 경로와 마지막 / 없이 입력.
+예: https://plant-book-84803.web.app,https://plant-book-84803.firebaseapp.com,http://127.0.0.1:4173
+자신의 배포 주소가 다르면 그 주소로 변경합니다.
+GLOBAL_DAILY_LIMIT=20, USER_DAILY_LIMIT=5는 우선 그대로 둡니다.
+name은 Worker 이름입니다. 동일 계정에서 이미 이름을 사용 중이면 고유한 이름으로 바꾸세요.
+여기에는 Pl@ntNet 비밀 키를 입력하지 않습니다.
+권장 환경은 Node.js 22.19 이상입니다. 기존 설치가 맞으면 재설치하지 않습니다.
+
+5. 서버 배포와 비밀 키 등록
+cmd에서 프로젝트의 backend 폴더로 이동합니다.
+cd /d "C:\Users\김준태\Documents\GitHub\bangjangsan-plant-book\backend"
+npm ci
+npm test
+npx wrangler login
+
+브라우저에서 자신의 Cloudflare 계정에 로그인하고 권한 요청을 확인합니다.
+그다음 서버를 배포합니다:
+npx wrangler deploy
+
+완료 시 출력된 https://forest-plant-identify.계정이름.workers.dev 주소를 기록합니다.
+이때는 비밀 키가 없으므로 분석 요청을 보내도 서버가 설정 미완료로 응답합니다.
+다음 명령으로 비밀 키를 등록합니다:
+npx wrangler secret put PLANTNET_API_KEY
+
+secret value 입력 단계에서 2번의 Pl@ntNet 키를 붙여 넣고 Enter를 누릅니다.
+키는 Cloudflare 서버의 Secret으로 등록됩니다. 별도 파일에 쓰지 않습니다.
+로그인 과정에서 인증서 오류가 다시 발생하면 같은 cmd 창에서
+set "NODE_USE_SYSTEM_CA=1"
+를 적용한 뒤 재시도합니다(Node 22.19 이상). 인증서 검증을 끄지 않습니다.
+
+6. 앱에 식별 서버 주소 입력
+프로젝트 루트의 public-config.json에 identifyEndpoint를 추가/입력합니다.
+예시(실제 자신의 Worker 주소를 사용하세요):
+{
+  "firebase": {
+    "apiKey": "기존 Firebase 공개 apiKey",
+    "authDomain": "plant-book-84803.firebaseapp.com",
+    "projectId": "plant-book-84803",
+    "appId": "기존 Firebase 웹 앱 appId"
+  },
+  "emulators": { "enabled": false },
+  "identifyEndpoint": "https://forest-plant-identify.계정이름.workers.dev/identify"
+}
+
+/identify까지 입력합니다. https 주소이며 쿼리나 인증 키를 URL에 붙이지 않습니다.
+주소가 비어 있으면 분석 버튼이 비활성화되지만 수동 기록·공유 기능은 사용할 수 있습니다.
+
+7. Firebase 앱과 규칙 업데이트
+cmd에서 프로젝트 루트로 돌아옵니다:
+cd /d "C:\Users\김준태\Documents\GitHub\bangjangsan-plant-book"
+npm ci
+npm test
+npm run build
+firebase deploy --only firestore --project plant-book-84803
+firebase deploy --only hosting --project plant-book-84803
+
+별도로 수정한 현재 규칙이 있다면 먼저 백업·병합합니다.
+v9 규칙은 기존 기록을 유지하며, 사용자 선택 후보의 제한된 메타데이터를 허용합니다.
+빌드는 식별 서버의 정확한 origin만 CSP 연결 대상으로 추가합니다.
+설정 변경 후에는 다시 빌드하고 Hosting을 배포해야 합니다.
+기존 숲체원 등록과 담당자 권한 설정은 그대로 이용합니다.
+
+8. 실제 사용 흐름
+계정 도감에서 로그인 → 사진 촬영 또는 앨범 선택.
+식별 서버와 Pl@ntNet으로 사진을 보내는 동의를 직접 선택.
+AI 식물 후보 분석 → 후보의 통용명/학명·점수 확인 → 후보 하나 선택.
+식물 이름 입력란에 선택한 이름이 들어갑니다. 원하면 직접 고칠 수 있습니다.
+숲체원·위치·메모를 확인하고 계정에 비공개 저장.
+상세 화면에 '사용자가 선택한 AI 후보 · 전문가 확인 전'이 표시되는지 확인.
+공유하려면 기존과 같이 공유 도감에서 신청하고 담당자 검토를 받습니다.
+
+9. 점수·이름·저장 정보의 의미
+점수는 API가 반환한 후보 순위 점수이며 검증 정확도/확정 확률이 아닙니다.
+한국어 통용명이 반환되지 않으면 영어 이름 또는 학명이 보일 수 있습니다.
+자동 번역으로 한국어 식물명을 지어내지 않습니다. 사용자가 이름을 수정할 수 있습니다.
+aiSelection은 사용자가 선택한 후보 정보이며 서버 검증 동정/전문가 확정 자료가 아닙니다.
+이름이나 기록을 수동 수정하면 기존 후보 메타데이터를 지웁니다.
+표준 식물 도감 speciesId 매핑과 출처가 있는 식물 설명은 아직 미구현입니다.
+
+10. 호출 한도와 취소
+이 Worker 경유 기준: 사용자 하루 5회, 전체 하루 20회, 요청 간격 최소 10초.
+하루 기준은 UTC이며 한국 시간 오전 9시에 날짜가 바뀝니다.
+같은 요청 ID·사진을 재전송하면 완료된 후보를 재사용합니다(48시간 이상 후 정리 가능).
+분석 실패/취소되어도 이미 전달한 외부 요청은 한도에 포함될 수 있습니다.
+서버 처리가 불확실한 요청을 자동으로 재호출하지 않습니다.
+실패한 동일 요청은 다른 사진을 선택하거나 직접 이름을 입력해 계속 사용할 수 있습니다.
+서버에는 사진/인증 토큰을 저장하지 않습니다. UID·요청 ID·사진 해시·후보·한도 메타데이터만 캐시합니다.
+그 메타데이터는 약 48시간 뒤 정리 대상이 됩니다.
+실제 사진은 한 식별 요청 안에서 일시 처리되며 서비스별 데이터 이용 조건은 공식 문서를 확인합니다.
+이 기능은 Worker를 우회한 별도 Pl@ntNet API 사용량을 통제하지 않습니다.
+Cloudflare/Pl@ntNet의 서비스 자체 한도에 먼저 도달할 수 있습니다.
+
+11. 오류가 나오면
+식별 서버 주소 안내: identifyEndpoint 입력 후 빌드/배포 확인.
+접속 주소 거부: ALLOWED_ORIGINS의 실제 웹사이트 주소와 http/https/포트 확인 후 서버 재배포.
+로그인 오류: 앱에서 다시 로그인. backend의 프로젝트 ID/공개 Firebase 키가 같은 프로젝트인지 확인.
+서버 설정 미완료: Cloudflare Secret PLANTNET_API_KEY와 FIREBASE_API_KEY 확인.
+후보 없음/API 실패: 선명한 사진으로 다시 기록하거나 이름 모름으로 저장.
+호출 한도: 직접 입력으로 계속 기록하고 다음 날짜에 분석.
+Firestore 권한 오류: v9 규칙 배포 확인. 공개 테스트 규칙으로 풀지 않습니다.
+
+공식 참고
+https://my.plantnet.org/doc/getting-started/introduction
+https://my.plantnet.org/pricing
+https://my.plantnet.org/terms_of_use
+https://developers.cloudflare.com/workers/platform/pricing/
+https://developers.cloudflare.com/durable-objects/platform/pricing/
+
+검증 범위
+Firebase 로그인/저장은 에뮬레이터에서 시험했습니다.
+Worker 엔진/지속 저장/인증 거부/한도/중복 방지는 실제 로컬 Workers 런타임에서 시험했습니다.
+Google 계정 확인 응답과 Pl@ntNet 응답은 테스트용으로 대체했습니다.
+실제 키로 Pl@ntNet을 호출하거나 Cloudflare/Firebase에 공개 배포하지 않았습니다.
+실서비스 연결과 실제 식별 품질은 위 설정 후 사용자의 사진으로 확인해야 합니다.

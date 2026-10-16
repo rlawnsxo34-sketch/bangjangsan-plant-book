@@ -1,0 +1,87 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "forestShareRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "ownerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "submittedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "forestShareRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "centerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "submittedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "forestPublicObservations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "centerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "photos",
+      "fieldPath": "imageData",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "observations",
+      "fieldPath": "description",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "observations",
+      "fieldPath": "location",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "forestShareRequests",
+      "fieldPath": "imageData",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "forestShareRequests",
+      "fieldPath": "publicNote",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "forestPublicObservations",
+      "fieldPath": "imageData",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "forestPublicObservations",
+      "fieldPath": "publicNote",
+      "indexes": []
+    }
+  ]
+}

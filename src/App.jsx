@@ -10,7 +10,7 @@ const date=value=>new Date(value).toLocaleDateString('ko-KR',{year:'numeric',mon
 function Photo({blob,alt,className}){const[url,setUrl]=useState('');useEffect(()=>{if(!blob)return;const next=URL.createObjectURL(blob);setUrl(next);return()=>URL.revokeObjectURL(next);},[blob]);return url?<img src={url} alt={alt} className={className}/>:<div className={className} role="status">사진 준비 중…</div>;}
 function Icon({as:Component,...props}){return <Component size={22} aria-hidden="true" {...props}/>;}
 function Modal({label,onClose,busy,children}){const opener=useRef(document.activeElement);return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-3" onClick={()=>{if(!busy)onClose();}}><Dialog key={label} returnFocus={opener} label={label} onClose={onClose} busy={busy} className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-5 shadow-xl">{children}</Dialog></div>;}
-export default function App(){
+export default function App({embedded=false,onPanelState}){
  const[screen,setScreen]=useState('book'),[records,setRecords]=useState([]),[ready,setReady]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[modal,setModal]=useState(null),[query,setQuery]=useState('');
  const[draft,setDraft]=useState({name:'',description:'',photo:null,location:null}),[photoBusy,setPhotoBusy]=useState(false),[gpsBusy,setGpsBusy]=useState(false),[photoError,setPhotoError]=useState(''),[gpsError,setGpsError]=useState('');
  const[editName,setEditName]=useState(''),[editMemo,setEditMemo]=useState(''),[importing,setImporting]=useState(false),[storageInfo,setStorageInfo]=useState('');
@@ -20,7 +20,7 @@ export default function App(){
  useEffect(()=>{mounted.current=true;refresh();const changed=()=>refresh();window.addEventListener('plant-records-changed',changed);const visibility=()=>{if(document.visibilityState==='visible')refresh();};document.addEventListener('visibilitychange',visibility);
   try{channel.current=new BroadcastChannel('bangjangsan-spark-records');channel.current.onmessage=changed;}catch(_){}
   return()=>{mounted.current=false;loadRevision.current++;photoTask.current.cancel();gpsTask.current.cancel();importTask.current.cancel();window.removeEventListener('plant-records-changed',changed);document.removeEventListener('visibilitychange',visibility);channel.current?.close();};},[refresh]);
- useEffect(()=>{if(!modal)return;const node=background.current;node.inert=true;node.setAttribute('aria-hidden','true');return()=>{node.inert=false;node.removeAttribute('aria-hidden');};},[!!modal]);
+ useEffect(()=>{if(!modal)return;const nav=document.getElementById('storage-navigation'),institutionNav=document.getElementById('institution-navigation');if(nav)nav.inert=true;if(institutionNav)institutionNav.inert=true;const node=background.current;node.inert=true;node.setAttribute('aria-hidden','true');return()=>{if(nav)nav.inert=false;if(institutionNav)institutionNav.inert=false;node.inert=false;node.removeAttribute('aria-hidden');};},[!!modal]);
  function resetDraft(){photoTask.current.cancel();gpsTask.current.cancel();draftId.current=null;frozen.current=null;setDraft({name:'',description:'',photo:null,location:null});setPhotoBusy(false);setGpsBusy(false);setPhotoError('');setGpsError('');}
  function navigate(next){if(lock.current||importing)return;if(next!=='capture'&&screen==='capture'){photoTask.current.cancel();gpsTask.current.cancel();setPhotoBusy(false);setGpsBusy(false);}setScreen(next);setError('');setNotice('');}
  function changed(){channel.current?.postMessage('changed');}
@@ -41,12 +41,13 @@ export default function App(){
   const task=importTask.current.begin();setImporting(true);setError('');setNotice('');try{const text=await file.text();if(!task.isCurrent())return;const rows=await parseBackup(text,{signal:task.signal});if(task.isCurrent())setModal({kind:'restore',rows});}catch(err){if(task.isCurrent()&&err.name!=='AbortError')setError(storageMessage(err));}finally{if(task.isCurrent())setImporting(false);}}
  function cancelImport(){importTask.current.cancel();setImporting(false);setNotice('백업 파일 확인을 취소했습니다.');}
  async function requestPersistence(){setError('');try{if(!navigator.storage?.persist){setStorageInfo('이 브라우저는 저장소 유지 요청을 지원하지 않습니다. 정기적으로 백업해주세요.');return;}const granted=await navigator.storage.persist();setStorageInfo(granted?'브라우저가 저장소 유지 요청을 승인했습니다. 직접 데이터 삭제나 기기 변경에 대비한 백업은 계속 필요합니다.':'브라우저가 유지 요청을 승인하지 않았습니다. 기록은 저장되지만 정기적으로 백업해주세요.');}catch(_){setStorageInfo('저장소 유지 요청을 처리하지 못했습니다. 정기적으로 백업해주세요.');}}
+ useEffect(()=>{onPanelState?.({busy:busy||photoBusy||gpsBusy||importing||!!modal,dirty:!!draft.photo||!!draft.name||!!draft.description});return()=>onPanelState?.({busy:false,dirty:false});},[busy,photoBusy,gpsBusy,importing,modal,draft,onPanelState]);
  const filtered=records.filter(r=>r.name.toLowerCase().includes(query.toLowerCase()));
  const activeRecord=modal?.record;
  const storageBytes=records.reduce((s,r)=>s+r.image.size,0);
  return <>
   <a className="skip-link" href="#main">본문으로 이동</a>
-  <div ref={background} className="mx-auto min-h-screen max-w-xl bg-[#F4F8F5] pb-28 shadow-sm">
+  <div ref={background} className={embedded?'local-panel mx-auto max-w-xl':'mx-auto min-h-screen max-w-xl bg-[#F4F8F5] pb-28 shadow-sm'}>
    <header className="flex items-center justify-between gap-3 border-b border-emerald-100 bg-white px-5 py-4"><div className="flex items-center gap-2 text-emerald-900"><Icon as={Leaf} weight="fill"/><span className="text-sm font-bold">국립장성 숲체원</span></div><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-900">개발용 · 기기 저장</span></header>
    <div className="border-b border-amber-200 bg-amber-50 px-5 py-3 text-sm leading-relaxed text-amber-950"><strong>기록은 이 브라우저에만 저장됩니다.</strong><br/>기기·브라우저·사이트 주소가 바뀌면 백업 파일로 옮겨주세요.</div>
    <main id="main" tabIndex={-1} className="px-5 py-6">
@@ -54,7 +55,7 @@ export default function App(){
     {notice&&<p role="status" className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p>}
     {!ready&&!loading&&<button className={secondary+' mb-4'} onClick={()=>{setError('');refresh();}}>저장소 다시 연결</button>}
     {screen==='book'&&<>
-     <div className="mb-6 flex items-end justify-between gap-3"><div><p className="mb-2 text-xs font-bold tracking-widest text-emerald-800">BANGJANGSAN FIELD NOTES</p><h1 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl"><span className="block">방장산</span><span className="block">식물 도감</span></h1><p className="mt-2 text-sm text-slate-600">한 장의 관찰로 채워가는 나의 숲</p></div><div className="shrink-0 rounded-2xl bg-white px-4 py-3 text-center"><strong className="block text-2xl text-emerald-900">{ready?records.length:'—'}</strong><span className="whitespace-nowrap text-xs text-slate-600">관찰 기록</span></div></div>
+     <div className="mb-6 flex items-end justify-between gap-3"><div><p className="mb-2 text-xs font-bold tracking-widest text-emerald-800">LOCAL FIELD NOTES</p><h1 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl"><span className="block">기기 도감</span></h1><p className="mt-2 text-sm text-slate-600">한 장의 관찰로 채워가는 나의 숲</p></div><div className="shrink-0 rounded-2xl bg-white px-4 py-3 text-center"><strong className="block text-2xl text-emerald-900">{ready?records.length:'—'}</strong><span className="whitespace-nowrap text-xs text-slate-600">관찰 기록</span></div></div>
      <button className={primary+' mb-6 w-full'} onClick={()=>navigate('capture')} disabled={!ready||busy}><Icon as={Camera}/>식물 관찰 기록하기</button>
      <label htmlFor="search" className="mb-2 block text-sm font-semibold text-slate-700">식물 이름으로 찾기</label><input id="search" type="search" className={field+' mb-5'} value={query} onChange={e=>setQuery(e.target.value)} placeholder="궁금했던 식물 이름"/>
      {loading&&<p role="status" className="mb-3 text-sm text-slate-600">도감을 불러오고 있습니다…</p>}
@@ -91,7 +92,7 @@ export default function App(){
      <p className="mt-5 text-xs leading-relaxed text-slate-600">로그인·기기 간 자동 동기화·사진 자동 식별은 이 개발용 버전에서 사용하지 않습니다. 기존 Firebase 기록은 불러오거나 변경하지 않습니다. 복원은 같은 ID의 현재 기록을 덮어쓰지 않습니다.</p>
     </>}
    </main>
-   <nav aria-label="주 메뉴" className="pb-safe fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-xl border-t border-emerald-100 bg-white/95 px-3 pt-2">{[['book','나의 도감',BookOpen],['capture','관찰 기록',Camera],['backup','백업·복원',DownloadSimple]].map(([key,label,Component])=><button key={key} aria-current={screen===key?'page':undefined} className={'flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-xs font-bold '+(screen===key?'bg-emerald-50 text-emerald-900':'text-slate-600')} onClick={()=>navigate(key)} disabled={busy||importing}><Icon as={Component}/>{label}</button>)}</nav>
+   <nav aria-label="주 메뉴" className={embedded?'local-subnav':'pb-safe fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-xl border-t border-emerald-100 bg-white/95 px-3 pt-2'}>{[['book','나의 도감',BookOpen],['capture','관찰 기록',Camera],['backup','백업·복원',DownloadSimple]].map(([key,label,Component])=><button key={key} aria-current={screen===key?'page':undefined} className={'flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-xs font-bold '+(screen===key?'bg-emerald-50 text-emerald-900':'text-slate-600')} onClick={()=>navigate(key)} disabled={busy||importing}><Icon as={Component}/>{label}</button>)}</nav>
   </div>
   {modal&&<Modal label={modal.kind==='detail'?'식물 기록 상세':modal.kind==='edit'?'식물 기록 수정':modal.kind==='delete'?'기록 삭제 확인':'백업 복원 확인'} busy={busy} onClose={closeModal}>
    {error&&<p role="alert" className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-900">{error}</p>}

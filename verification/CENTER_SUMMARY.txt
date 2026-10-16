@@ -1,0 +1,8 @@
+v13, 2026-10-16
+PASS app unit tests: 50/50.
+PASS Firestore emulator security checks: 29/29, including 4 new institution binding checks.
+PASS production build.
+PASS React server render: initial chooser, two institution options/demo label, selected institution shared view.
+Prior test logs are historical and are not claims of current full browser verification.
+NOT RUN physical phone/browser interaction, live API, or actual deployment.
+Backend Worker and secrets were not changed in this phase.

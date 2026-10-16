@@ -1,0 +1,10 @@
+v10 validation — 2026-10-16
+PASS: existing unit tests 39/39.
+PASS: production build.
+PASS: initial React server render with branded assets and navigation.
+PASS: configured AI endpoint origin included in generated CSP.
+PASS: user PNG bytes embedded unchanged.
+PASS: backend worker, Windows path fix, Firestore rules/indexes and repositories unchanged.
+NOT RUN: browser layout/interaction checks, physical iOS/Android camera/GPS/keyboard checks.
+NOT RUN: live Firebase/Cloudflare deployment or Pl@ntNet request.
+Other logs in this directory belong to earlier versions; they are historical evidence only.

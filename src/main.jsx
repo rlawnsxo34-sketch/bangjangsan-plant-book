@@ -1,7 +1,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import './photo-flow.js';
-import App from './App.jsx';
+import App from './CloudApp.jsx';
 class Boundary extends React.Component{
  constructor(props){super(props);this.state={error:false};}
  static getDerivedStateFromError(){return {error:true};}
