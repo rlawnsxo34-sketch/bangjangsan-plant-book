@@ -1,0 +1,4 @@
+Original uploaded horizontal PNG, public copy and deployed copy are byte-identical: passed.
+Built logo path, start instructions, CSP hash and icon paths: passed.
+Backend, existing public assets/icons, field tree data, QR/visit model, auth/storage runtimes, Firebase config and rules/indexes: unchanged from v18.
+Actual browser/phone layout, Windows OS and deployment: not run.

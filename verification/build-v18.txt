@@ -1,0 +1,5 @@
+
+> forest-book-easy-dev@18.0.0 build
+> node build.mjs
+
+Production HTML built: 3546340 bytes; no runtime Babel/Tailwind CDN.

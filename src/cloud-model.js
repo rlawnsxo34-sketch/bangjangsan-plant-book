@@ -23,3 +23,12 @@ export function validatePhoto(data){
  return bytes.length;
 }
 export function createEpoch(){let value=0;return{next:()=>++value,current:()=>value,isCurrent:token=>token===value};}
+
+// Preserve the selected candidate when only its memo or institution changes.
+// A changed plant name becomes unclassified; callers cannot replace AI metadata.
+export function applyTextEdit(old,patch={}){
+ const {aiSelection,...base}=old;
+ const allowed=Object.fromEntries(['name','description','centerName','centerId'].filter(key=>Object.hasOwn(patch,key)).map(key=>[key,patch[key]]));
+ const keep=aiSelection&&(!Object.hasOwn(allowed,'name')||allowed.name===old.name);
+ return {...base,...allowed,...(keep?{aiSelection}:{})};
+}

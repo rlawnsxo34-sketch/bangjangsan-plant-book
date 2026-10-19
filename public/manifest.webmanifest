@@ -1,0 +1,31 @@
+{
+  "id": "/",
+  "name": "ㅇㄱㅁㅇ · 이건뭐야",
+  "short_name": "ㅇㄱㅁㅇ",
+  "description": "사진으로 숲속 식물을 만나고 나의 관찰을 기록하는 도감",
+  "lang": "ko",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f9f4",
+  "theme_color": "#065f46",
+  "prefer_related_applications": false,
+  "categories": [
+    "education",
+    "reference"
+  ],
+  "icons": [
+    {
+      "src": "/icons/egmy-192-v15.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/egmy-512-v15.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

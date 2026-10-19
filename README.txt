@@ -1,3 +1,20 @@
+ㅇㄱㅁㅇ v19: LOGO_AND_START_UPDATE.txt를 먼저 읽으세요.
+가로형 로고와 시작 안내를 추가했습니다. 기존 현장 자료·사진·설정·.git을 유지하고 적용하세요.
+
+ㅇㄱㅁㅇ v18: EASY_WORDS_UPDATE.txt를 먼저 읽으세요.
+기존 현장 자료(src/experience-data.js), 사진, public-config.json, .git을 유지하고 적용하세요.
+
+ㅇㄱㅁㅇ v17: 현재 적용 절차는 VISITOR_EXPERIENCE_UPDATE.txt를 먼저 읽으세요.
+사진 없이 시작하는 방문객 관찰 체험과 기관별 진입 링크를 추가했습니다.
+
+ㅇㄱㅁㅇ v16: 현재 적용 절차는 DRAFT_RECOVERY_UPDATE.txt를 먼저 읽으세요.
+
+ㅇㄱㅁㅇ v15: HOME_SCREEN_UPDATE.txt가 현재 적용 절차입니다.
+이전 버전 문서는 참고용입니다.
+
+ㅇㄱㅁㅇ v14: 현재 적용 절차는 DISCOVERY_BOOK_UPDATE.txt가 우선입니다.
+이전 버전 문서와 검증 기록은 참고용입니다.
+
 ㅇㄱㅁㅇ v13: 현재 적용 절차는 CENTER_SELECTION_UPDATE.txt가 우선입니다.
 아래 이전 버전 설명은 참고용입니다.
 

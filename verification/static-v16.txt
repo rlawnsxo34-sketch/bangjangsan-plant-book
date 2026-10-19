@@ -1,0 +1,3 @@
+Built HTML recovery messages, CSP, manifest and icon paths: passed.
+Firestore rules, Worker and public config: byte-identical to v15.
+Real browser, phone and live deployment: not run.

@@ -1,0 +1,8 @@
+v14, 2026-10-16
+PASS app unit tests: 56/56.
+PASS Firestore emulator regression: 29/29.
+PASS production build.
+PASS React server render: counts/group controls, unclassified records, partial-list notice and empty state.
+Model tests cover exact scientific-name grouping, repeats vs first saved date, manual entries, immutable inputs/search and candidate-preserving text edits.
+No browser interaction, physical mobile tests, live API calls or actual deployment performed.
+Previous logs in this folder are historical only.

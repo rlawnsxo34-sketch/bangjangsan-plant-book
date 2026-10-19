@@ -3,7 +3,7 @@ import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmai
 import {getFirestore,connectFirestoreEmulator,doc,collection,query,orderBy,limit,getDocsFromServer,getDocFromServer,runTransaction} from 'firebase/firestore';
 import config from '../public-config.json';
 import {createSharing,shareRefs,invalidateShare} from './share-runtime.js';
-import {validateDraft,validatePhoto,CLOUD_LIMIT} from './cloud-model.js';
+import {validateDraft,validatePhoto,CLOUD_LIMIT,applyTextEdit} from './cloud-model.js';
 let cached;
 export function getRuntime(){
  if(cached)return cached;
@@ -22,7 +22,7 @@ export function getRuntime(){
    return runTransaction(db,async tx=>{owner(uid);const existing=await tx.get(p.ob);if(existing.exists())return existing.data();
     const {imageData,id,...fields}=value;const data={...fields,ownerId:uid,schemaVersion:3,revision:1,shareStatus:'private',speciesId:null,observedAt:null};
     tx.set(p.ob,data);tx.set(p.photo,{ownerId:uid,imageData,schemaVersion:3});return data;});},
-  async edit(uid,row,patch){owner(uid);const p=paths(uid,row.id);return runTransaction(db,async tx=>{owner(uid);const s=await tx.get(p.ob);if(!s.exists())throw new Error('기록이 삭제되었습니다. 새로고침해주세요.');const share=shareRefs(db,row.id),submission=await tx.get(share.request);const old=s.data();if(old.revision!==row.revision)throw new Error('다른 기기에서 수정된 기록입니다. 새로고침 후 다시 수정해주세요.');const {aiSelection,...editable}=old;const data={...editable,...patch,revision:old.revision+1,updatedAt:Math.max(Date.now(),old.updatedAt+1)};validateDraft({...data,id:row.id});invalidateShare(tx,share,submission);tx.set(p.ob,data);return data;});},
+  async edit(uid,row,patch){owner(uid);const p=paths(uid,row.id);return runTransaction(db,async tx=>{owner(uid);const s=await tx.get(p.ob);if(!s.exists())throw new Error('기록이 삭제되었습니다. 새로고침해주세요.');const share=shareRefs(db,row.id),submission=await tx.get(share.request);const old=s.data();if(old.revision!==row.revision)throw new Error('다른 기기에서 수정된 기록입니다. 새로고침 후 다시 수정해주세요.');const data={...applyTextEdit(old,patch),revision:old.revision+1,updatedAt:Math.max(Date.now(),old.updatedAt+1)};validateDraft({...data,id:row.id});invalidateShare(tx,share,submission);tx.set(p.ob,data);return data;});},
   async remove(uid,row){owner(uid);const p=paths(uid,row.id);return runTransaction(db,async tx=>{owner(uid);const s=await tx.get(p.ob);if(!s.exists())return;const share=shareRefs(db,row.id),submission=await tx.get(share.request);if(s.data().revision!==row.revision)throw new Error('다른 기기에서 수정된 기록입니다. 새로고침 후 삭제해주세요.');invalidateShare(tx,share,submission);tx.delete(p.ob);tx.delete(p.photo);});}
  };
  cached={auth,repo,identifyEndpoint:config.identifyEndpoint||'',token:()=>{if(!auth.currentUser)throw new Error('로그인이 필요합니다.');return auth.currentUser.getIdToken();},sharing:createSharing(db,auth),subscribe:callback=>onAuthStateChanged(auth,callback),login:(email,password)=>signInWithEmailAndPassword(auth,email,password),signup:(email,password)=>createUserWithEmailAndPassword(auth,email,password),logout:()=>signOut(auth),reset:email=>sendPasswordResetEmail(auth,email)};return cached;

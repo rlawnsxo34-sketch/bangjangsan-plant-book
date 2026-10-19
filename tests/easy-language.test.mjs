@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readableTree} from '../src/easy-language.js';
+import {EXPERIENCE} from '../src/experience-data.js';
+test('easier plant descriptions preserve source data, species identity and locally entered field details',()=>{const tree=EXPERIENCE.trees[0],photo={src:'/experience/my-tree.jpg',alt:'현장 사진',credit:'기관 보유 사진'},location={label:'안내동 옆',lat:35,lng:126};const input={...tree,photo,location,reviewed:true};const old=structuredClone(input),result=readableTree(input);assert.deepEqual(input,old);assert.equal(result.photo,photo);assert.equal(result.location,location);assert.equal(result.reviewed,true);assert.equal(result.scientificName,tree.scientificName);assert.ok(result.description.includes('숨구멍'));assert.ok(!result.description.includes('기공선'));});
+test('institution-authored descriptions and hints are not replaced by generic pilot copy',()=>{const tree={...EXPERIENCE.trees[1],feature:'우리 숲의 나무',description:'현장에서 확인한 별도 설명',hints:['담당자가 작성한 관찰 안내']};const result=readableTree(tree);assert.equal(result.description,tree.description);assert.equal(result.feature,tree.feature);assert.deepEqual(result.hints,tree.hints);});

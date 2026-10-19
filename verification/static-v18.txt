@@ -1,0 +1,4 @@
+Production copy, inline script CSP, icon paths and package versions: passed.
+Backend, rules, indexes, public config, field tree data, photos/icons, cloud/share runtime and draft/photo storage code: byte-identical to Windows-fixed v17.
+Existing center/view QR parameters unchanged.
+No actual Windows OS, browser/phone layout, deployment or visitor comprehension test run.
