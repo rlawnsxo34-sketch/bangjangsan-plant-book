@@ -1,7 +1,7 @@
 // General reference content, not a surveyed trail or an expert identification.
 // Add only institution-owned/licensed photos after confirming the field tree.
 export const EXPERIENCE={
- id:'three-trees-v1',title:'잎과 나무껍질로 만나는 세 나무',
+ id:'three-trees-v2',title:'잎과 나무껍질로 만나는 세 나무',
  subtitle:'이름을 읽고, 특징을 찾고, 나의 발견을 남겨요.',
  reviewLabel:'장소 확인 전 시범 체험',
  locationNotice:'실제 관찰 지점은 준비 중이에요. 이 목록은 선택한 기관에서 세 나무를 모두 만날 수 있다는 안내가 아닙니다.',
@@ -15,13 +15,13 @@ export const EXPERIENCE={
    photo:null,location:null,reviewed:false,
    sources:[{label:'산림청 산림용어사전 · 편백',url:'https://www.forest.go.kr/kfsweb/kfi/kfs/mwd/selectMtstWordDictionary.do?mn=NKFS_04_07_01&wrdSn=9956&wrdType='}]
   },
-  {id:'cork-oak',name:'굴참나무',standardName:'굴참나무',scientificName:'Quercus variabilis',theme:'나무껍질에도 특징이 있어요',feature:'코르크층이 발달한 껍질',
-   description:'나무껍질에 코르크층이 발달하는 나무예요. 잎 뒷면에는 흰 털이 빽빽하게 나 있어요. 잎뿐 아니라 줄기의 모습도 나무를 알아보는 단서가 돼요.',
-   question:'껍질에 어떤 무늬와 갈라짐이 보이나요? 가까운 다른 나무와 어떻게 다른가요?',
-   hints:['나무껍질을 벗기거나 긁지 않고 눈으로 관찰해요.','껍질 모양 하나만으로 굴참나무라고 확정하지 않아요.'],
-   placeholder:'예: 껍질에 깊은 선이 있었어요. 옆 나무보다 울퉁불퉁해 보였어요.',
+  {id:'galcham-oak',name:'갈참나무',standardName:'갈참나무',scientificName:'Quercus aliena',theme:'잎의 가장자리와 앞뒤를 살펴봐요',feature:'둥근 톱니가 있는 잎',
+   description:'잎은 타원형에 가깝고 가장자리에 굵은 톱니가 있어요. 잎 뒷면은 회색빛을 띤 흰색으로 보여요. 눈높이에서 보이는 잎의 가장자리와 앞뒤 색을 비교해보세요.',
+   question:'잎 가장자리의 톱니는 어떤 모양인가요? 잎 앞면과 뒷면의 색은 어떻게 다른가요?',
+   hints:['가지를 꺾거나 잎을 떼지 말고, 안전하게 보이는 잎을 살펴보세요.','비슷한 참나무가 많아요. 잎 한 가지 특징만으로 이름을 정하지 않아요.','잎이 없거나 뒷면이 보이지 않으면 “확인하지 못했어요”라고 적어도 괜찮아요.'],
+   placeholder:'예: 잎 가장자리가 둥글게 들쭉날쭉했어요. 뒷면은 앞면보다 밝게 보였어요.',
    photo:null,location:null,reviewed:false,
-   sources:[{label:'굴참나무 - 한국민족문화대백과사전 · 임경빈',url:'https://encykorea.aks.ac.kr/Article/E0006759'}]
+   sources:[{label:'BRIS 어린이생물도감 · 갈참나무 (국립수목원 제공)',url:'https://www.bris.go.kr/portal/book/childIlustbkDetailPopup.do?ilustbkNo=102&menuId=114'}]
   },
   {id:'japanese-maple',name:'단풍나무',standardName:'단풍나무',scientificName:'Acer palmatum',theme:'손바닥을 닮은 잎을 찾아봐요',feature:'손바닥처럼 갈라진 잎',
    description:'잎이 손바닥처럼 보통 5~7갈래로 갈라져요. 한 나무에서도 잎마다 크기와 색이 어떻게 다른지 살펴보세요. 여기서는 단풍나무(Acer palmatum)를 다루며, 당단풍나무 등 다른 종류는 별도로 확인해야 해요.',

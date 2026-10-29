@@ -1,0 +1,30 @@
+v21에서 바뀐 파일
+README.txt
+START_HERE.txt
+dist/index.html
+firebase.json
+firestore.indexes.json
+firestore.rules
+package-lock.json
+package.json
+src/App.jsx
+src/CenterChooser.jsx
+src/CloudApp.jsx
+src/SharingPanel.jsx
+src/cloud-runtime.js
+src/draft-store.js
+src/styles.css
+src/useAccountDraft.js
+tests/experience-routing.test.mjs
+tests/security-rules.test.mjs
+tests/sharing-rules.test.mjs
+verification/current-checks.txt
+
+새 파일
+src/record-photos.js
+src/RecordPhotos.jsx
+docs/MULTI_PHOTOS.txt
+tests/runtime-emulator.test.mjs
+tests/record-photos.test.mjs
+
+설정과 직접 작성한 현장 자료는 START_HERE.txt 안내에 따라 유지하세요.

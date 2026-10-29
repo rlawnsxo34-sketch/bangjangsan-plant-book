@@ -1,4 +1,0 @@
-
-> forest-book-draft-dev@16.0.0 test
-> node --test tests/local-store.test.mjs tests/photo-flow.test.cjs tests/cloud-model.test.mjs tests/korean-names.test.mjs tests/reference-images.test.mjs tests/center-model.test.mjs tests/discovery-model.test.mjs tests/install-controller.test.mjs tests/draft-store.test.mjs tests/account-draft.test.mjs
-

@@ -32,18 +32,37 @@ service cloud.firestore {
     && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['centerId','centerName']) || validCenterBinding(request.resource.data))
     && (!('centerId' in resource.data) || ('centerId' in request.resource.data))
     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','description','centerName','centerId','updatedAt','revision','aiSelection'])
-    && (!('aiSelection' in request.resource.data) || request.resource.data.aiSelection == resource.data.aiSelection);
+    && (!('aiSelection' in request.resource.data) || (request.resource.data.aiSelection == resource.data.aiSelection
+     && getAfter(ph(uid,id)).data.imageData == get(ph(uid,id)).data.imageData));
    allow delete: if owner(uid) && !existsAfter(ph(uid,id)) && inactiveShareAfter(id);
+  }
+  function validExtraPhoto(image) {
+   return image is string && image.size()>26 && image.size()<=160023 && image.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+');
+  }
+  function validAdditionalPhotos(data) {
+   return !('additionalImages' in data) || (data.additionalImages is list && data.additionalImages.size()<=2
+    && (data.additionalImages.size()<1 || validExtraPhoto(data.additionalImages[0]))
+    && (data.additionalImages.size()<2 || validExtraPhoto(data.additionalImages[1])));
   }
   match /forestDevUsers/{uid}/photos/{id} {
    allow read: if owner(uid) && exists(ob(uid,id));
    allow create: if owner(uid) && id.matches('[A-Za-z0-9_-]{1,80}') && !exists(ob(uid,id)) && existsAfter(ob(uid,id))
     && request.resource.data.keys().hasAll(['ownerId','schemaVersion','imageData'])
-    && request.resource.data.keys().hasOnly(['ownerId','schemaVersion','imageData'])
+    && request.resource.data.keys().hasOnly(['ownerId','schemaVersion','imageData','additionalImages'])
+    && validAdditionalPhotos(request.resource.data)
     && request.resource.data.ownerId==uid && request.resource.data.schemaVersion==3
     && request.resource.data.imageData is string && request.resource.data.imageData.size()>26 && request.resource.data.imageData.size()<=160023
     && request.resource.data.imageData.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+');
-   allow update: if false;
+   allow update: if owner(uid) && exists(ob(uid,id)) && existsAfter(ob(uid,id))
+    && request.resource.data.keys().hasAll(['ownerId','schemaVersion','imageData','lastEditId'])
+    && request.resource.data.keys().hasOnly(['ownerId','schemaVersion','imageData','additionalImages','lastEditId'])
+    && request.resource.data.ownerId==uid && request.resource.data.schemaVersion==3
+    && validExtraPhoto(request.resource.data.imageData) && validAdditionalPhotos(request.resource.data)
+    && request.resource.data.lastEditId is string && request.resource.data.lastEditId.matches('[A-Za-z0-9_-]{1,80}')
+    && (!('lastEditId' in resource.data) || request.resource.data.lastEditId != resource.data.lastEditId)
+    && getAfter(ob(uid,id)).data.revision == get(ob(uid,id)).data.revision+1
+    && inactiveShareAfter(id)
+    && (request.resource.data.imageData == resource.data.imageData || !('aiSelection' in getAfter(ob(uid,id)).data));
    allow delete: if owner(uid) && !existsAfter(ob(uid,id));
   }
   function sr(id) { return /databases/$(database)/documents/forestShareRequests/$(id); }
@@ -58,20 +77,36 @@ service cloud.firestore {
   function shareOwner(data) { return request.auth != null && request.auth.uid == data.ownerId; }
   function validRequest(data,id) {
    return data.keys().hasAll(['ownerId','observationId','centerId','centerName','name','publicNote','imageData','originalRevision','submittedAt','status','reviewReason','reviewedAt','reviewedBy','reviewId'])
-    && data.keys().hasOnly(['ownerId','observationId','centerId','centerName','name','publicNote','imageData','originalRevision','submittedAt','status','reviewReason','reviewedAt','reviewedBy','reviewId'])
+    && data.keys().hasOnly(['ownerId','observationId','centerId','centerName','name','publicNote','imageData','originalRevision','submittedAt','status','reviewReason','reviewedAt','reviewedBy','reviewId','additionalImages','selectedPhotoIndexes','submissionId'])
     && id.matches('[A-Za-z0-9_-]{1,80}') && data.observationId == id
     && data.ownerId is string && data.centerId is string && data.centerId.size()>0 && data.centerId.size()<=80
     && data.publicNote is string && data.publicNote.size()<=1000
     && data.name is string && data.name.size()>0 && data.name.size()<=80
     && data.originalRevision is int && data.originalRevision>=1
-    && data.imageData is string && data.imageData.size()<=160023;
+    && validExtraPhoto(data.imageData) && validAdditionalPhotos(data)
+    && (!('submissionId' in data) || (data.submissionId is string && data.submissionId.matches('[A-Za-z0-9_-]{1,80}')));
+  }
+  function sharedExtras(data) { return ('additionalImages' in data) ? data.additionalImages : []; }
+  function privatePhoto(data,index) {
+   let photo = get(ph(data.ownerId,data.observationId)).data;
+   return index==0 ? photo.imageData : (('additionalImages' in photo) && photo.additionalImages.size()>=index ? photo.additionalImages[index-1] : null);
+  }
+  function selectedPhotoMatches(data) {
+   return !('selectedPhotoIndexes' in data)
+    ? (data.imageData==privatePhoto(data,0) && !('additionalImages' in data))
+    : (data.selectedPhotoIndexes is list && data.selectedPhotoIndexes.size()>=1 && data.selectedPhotoIndexes.size()<=3
+      && sharedExtras(data).size()==data.selectedPhotoIndexes.size()-1
+      && data.selectedPhotoIndexes[0] is int && data.selectedPhotoIndexes[0]>=0 && data.selectedPhotoIndexes[0]<=2
+      && data.imageData==privatePhoto(data,data.selectedPhotoIndexes[0])
+      && (data.selectedPhotoIndexes.size()<2 || (data.selectedPhotoIndexes[1] is int && data.selectedPhotoIndexes[1]>data.selectedPhotoIndexes[0] && data.selectedPhotoIndexes[1]<=2 && data.additionalImages[0]==privatePhoto(data,data.selectedPhotoIndexes[1])))
+      && (data.selectedPhotoIndexes.size()<3 || (data.selectedPhotoIndexes[2] is int && data.selectedPhotoIndexes[2]>data.selectedPhotoIndexes[1] && data.selectedPhotoIndexes[2]<=2 && data.additionalImages[1]==privatePhoto(data,data.selectedPhotoIndexes[2]))));
   }
   function validSubmission(data,id) {
    return shareOwner(data) && validRequest(data,id) && activeCenter(data.centerId)
     && (!('centerId' in get(ob(data.ownerId,id)).data) || data.centerId == get(ob(data.ownerId,id)).data.centerId)
     && data.centerName == get(center(data.centerId)).data.name
     && data.name == get(ob(data.ownerId,id)).data.name && data.originalRevision == get(ob(data.ownerId,id)).data.revision
-    && data.imageData == get(ph(data.ownerId,id)).data.imageData
+    && selectedPhotoMatches(data)
     && data.submittedAt == request.time && data.status == 'pending'
     && data.reviewReason == '' && data.reviewedAt == null && data.reviewedBy == null && data.reviewId == null
     && !existsAfter(pub(id));
@@ -91,6 +126,20 @@ service cloud.firestore {
    allow read: if resource.data.active == true;
    allow write: if false;
   }
+  match /forestCenters/{centerId}/treePlaces/{treeId} {
+   function validPlace() {
+    let d=request.resource.data;
+    return d.keys().hasAll(['label','coordinates','revision','updatedAt']) && d.keys().hasOnly(['label','coordinates','revision','updatedAt'])
+     && treeId in ['hinoki','galcham-oak','japanese-maple']
+     && d.label is string && d.label.size()>0 && d.label.size()<=160
+     && d.revision is int && d.revision>=1 && d.updatedAt==request.time
+     && (d.coordinates==null || (d.coordinates is map && d.coordinates.keys().hasAll(['lat','lng']) && d.coordinates.keys().hasOnly(['lat','lng']) && d.coordinates.lat is number && d.coordinates.lat>=-90 && d.coordinates.lat<=90 && d.coordinates.lng is number && d.coordinates.lng>=-180 && d.coordinates.lng<=180));
+   }
+   allow read: if activeCenter(centerId);
+   allow create: if activeCenter(centerId) && reviewer(centerId) && owner(request.auth.uid) && validPlace() && request.resource.data.revision==1;
+   allow update: if activeCenter(centerId) && reviewer(centerId) && owner(request.auth.uid) && validPlace() && request.resource.data.revision==resource.data.revision+1;
+   allow delete: if false;
+  }
   match /forestReviewerGrants/{uid}/centers/{id} {
    allow read: if owner(uid);
    allow write: if false;
@@ -100,7 +149,8 @@ service cloud.firestore {
    allow list: if shareOwner(resource.data) || (resource.data.status != 'withdrawn' && reviewer(resource.data.centerId));
    allow create: if validSubmission(request.resource.data,id);
    allow update: if
-     (shareOwner(resource.data) && request.resource.data.ownerId == resource.data.ownerId && validSubmission(request.resource.data,id))
+     (shareOwner(resource.data) && request.resource.data.ownerId == resource.data.ownerId && validSubmission(request.resource.data,id)
+      && (!('submissionId' in request.resource.data) || !('submissionId' in resource.data) || request.resource.data.submissionId!=resource.data.submissionId))
      || (shareOwner(resource.data) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) && request.resource.data.status == 'withdrawn' && !existsAfter(pub(id)))
      || validReview(request.resource.data,resource.data,id);
    allow delete: if false;
@@ -123,12 +173,13 @@ service cloud.firestore {
    allow create,update: if reviewer(get(sr(id)).data.centerId) && get(sr(id)).data.status == 'pending'
     && getAfter(sr(id)).data.status == 'approved' && getAfter(sr(id)).data.reviewedBy == request.auth.uid
     && request.resource.data.keys().hasAll(['centerId','centerName','name','publicNote','imageData','institutionLocation','locationLabel','reviewScope','publishedAt'])
-    && request.resource.data.keys().hasOnly(['centerId','centerName','name','publicNote','imageData','institutionLocation','locationLabel','reviewScope','publishedAt'])
+    && request.resource.data.keys().hasOnly(['centerId','centerName','name','publicNote','imageData','institutionLocation','locationLabel','reviewScope','publishedAt','additionalImages'])
     && request.resource.data.centerId == getAfter(sr(id)).data.centerId
     && request.resource.data.centerName == getAfter(sr(id)).data.centerName
     && request.resource.data.name == getAfter(sr(id)).data.name
     && request.resource.data.publicNote == getAfter(sr(id)).data.publicNote
     && request.resource.data.imageData == getAfter(sr(id)).data.imageData
+    && sharedExtras(request.resource.data) == sharedExtras(getAfter(sr(id)).data)
     && request.resource.data.institutionLocation == get(center(request.resource.data.centerId)).data.mapCenter
     && request.resource.data.locationLabel == '기관 위치 · 관찰 지점 아님'
     && request.resource.data.reviewScope == '담당자 공유 검토 · 식물 종 확정 아님'

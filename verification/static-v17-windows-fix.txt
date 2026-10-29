@@ -1,2 +1,0 @@
-App source, backend, Firebase configuration and built deployment files are byte-identical to the original v17.
-Actual Windows OS execution has not been performed.

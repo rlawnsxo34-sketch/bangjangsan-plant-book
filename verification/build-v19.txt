@@ -1,5 +1,0 @@
-
-> forest-book-welcome-dev@19.0.0 build
-> node build.mjs
-
-Production HTML built: 3553351 bytes; no runtime Babel/Tailwind CDN.

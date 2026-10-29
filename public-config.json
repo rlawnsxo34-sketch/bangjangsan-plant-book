@@ -8,5 +8,8 @@
   "emulators": {
     "enabled": false
   },
-  "identifyEndpoint": "https://forest-plant-identify.plant-book.workers.dev/identify"
+  "identifyEndpoint": "https://forest-plant-identify.plant-book.workers.dev/identify",
+  "kakaoMap": {
+    "javascriptKey": "5311da8a09bf8431b6cb09fa7614e758"
+  }
 }

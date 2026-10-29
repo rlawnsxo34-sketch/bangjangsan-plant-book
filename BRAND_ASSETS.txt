@@ -1,5 +1,5 @@
 v19 가로형 로고: public/brand/egmy-horizontal-v19.png
-사용자가 제공한 ㅇㄱㅁㅇ_가로형.png를 수정 없이 사용합니다. 상단 배치와 적용 절차는 LOGO_AND_START_UPDATE.txt를 보세요.
+사용자가 제공한 ㅇㄱㅁㅇ_가로형(2).png를 수정 없이 사용합니다. 적용 절차는 START_HERE.txt를 보세요. 새 원본의 가로세로 비율을 그대로 유지합니다.
 
 사용자 제공 원본 이미지
 01.관찰포이_봄.png — 캐릭터

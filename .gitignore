@@ -9,3 +9,26 @@ bangjangsan-backup-*.json
 .dev.vars
 .dev.vars.*
 backend/.wrangler/
+
+# Recreated by npm run build
+dist/
+# Obsolete generated copies from earlier versions
+code_artifact.html
+build-meta.json
+
+# Temporary bundles created by isolated UI tests
+tests/.experience-test-*.mjs
+tests/.routing-test-*.mjs
+tests/.record-card-test-*.mjs
+tests/.candidate-test-*.mjs
+tests/.runtime-emulator-*.mjs
+tests/.photo-editor-test-*.mjs
+
+tests/.share-composer-test-*.mjs
+tests/.sharing-ui-test-*.mjs
+
+tests/.place-map-test-*.mjs
+
+tests/.tree-map-test-*.mjs
+
+tests/.kakao-canvas-test-*.mjs

@@ -1,4 +1,0 @@
-Built visitor text, inline-script CSP hash, manifest/icon paths and package versions: passed.
-Firestore rules/indexes, Worker, public config and v16 draft persistence: byte-identical to v16.
-Visitor notes use page memory only; no new storage service or AI endpoint introduced.
-Real browser layout, mobile QR scan, clipboard/download and live deployment: not run.

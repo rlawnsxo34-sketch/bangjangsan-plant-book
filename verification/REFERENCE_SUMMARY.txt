@@ -1,9 +1,0 @@
-v12 checks, 2026-10-16
-PASS app unit tests 46/46, including reference URL validation, attribution, two-image bounds and legacy responses.
-PASS backend 5/5: real local Worker/DO engine, mocked Google/Pl@ntNet with reference image metadata.
-PASS production build.
-PASS Wrangler deploy --dry-run, not deployed.
-PASS React server render: image, attribution, lazy load and missing-image message.
-PASS generated CSP: exact bs.plantnet.org image origin only.
-No live API request, reference image fetch, visual browser QA or physical mobile tests performed.
-Historical verification logs relate to previous versions only.

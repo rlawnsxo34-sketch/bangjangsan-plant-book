@@ -82,6 +82,21 @@
       "collectionGroup": "forestPublicObservations",
       "fieldPath": "publicNote",
       "indexes": []
+    },
+    {
+      "collectionGroup": "photos",
+      "fieldPath": "additionalImages",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "forestShareRequests",
+      "fieldPath": "additionalImages",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "forestPublicObservations",
+      "fieldPath": "additionalImages",
+      "indexes": []
     }
   ]
 }

@@ -1,3 +1,6 @@
+import {createTreePlaces} from './tree-place-runtime.js';
+import {samePhotos,validPhotoEditId,photoEditRecord} from './photo-edit-model.js';
+import {recordPhotos,photoDocument} from './record-photos.js';
 import {initializeApp} from 'firebase/app';
 import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendPasswordResetEmail,connectAuthEmulator} from 'firebase/auth';
 import {getFirestore,connectFirestoreEmulator,doc,collection,query,orderBy,limit,getDocsFromServer,getDocFromServer,runTransaction} from 'firebase/firestore';
@@ -18,14 +21,30 @@ export function getRuntime(){
  const repo={
   async list(uid){owner(uid);const rows=await getDocsFromServer(query(collection(db,'forestDevUsers',uid,'observations'),orderBy('createdAt','desc'),limit(CLOUD_LIMIT+1)));owner(uid);return rows.docs.map(d=>({...d.data(),id:d.id}));},
   async photo(uid,id){owner(uid);const s=await getDocFromServer(paths(uid,id).photo);owner(uid);if(!s.exists())throw new Error('사진을 찾지 못했습니다.');validatePhoto(s.data().imageData);return s.data().imageData;},
-  async add(uid,value){owner(uid);validateDraft(value);validatePhoto(value.imageData);const p=paths(uid,value.id);
+  async photos(uid,id){owner(uid);const s=await getDocFromServer(paths(uid,id).photo);owner(uid);if(!s.exists())throw new Error('사진을 찾지 못했습니다.');return recordPhotos(s.data());},
+  async album(uid,id){owner(uid);const p=paths(uid,id);const result=await runTransaction(db,async tx=>{owner(uid);const [observation,photo]=await Promise.all([tx.get(p.ob),tx.get(p.photo)]);if(!observation.exists()||!photo.exists())throw new Error('기록 또는 사진이 없습니다. 목록을 다시 불러와주세요.');return {record:{...observation.data(),id},photos:recordPhotos(photo.data())};});owner(uid);return result;},
+  async editPhotos(uid,row,images,editId){
+   owner(uid);if(!validPhotoEditId(editId))throw new Error('사진 저장 요청을 확인해주세요.');
+   const target=photoDocument(uid,{imageData:images[0]??null,additionalImages:images.slice(1)}),p=paths(uid,row.id),share=shareRefs(db,row.id);
+   return runTransaction(db,async tx=>{owner(uid);const [observation,photo,submission]=await Promise.all([tx.get(p.ob),tx.get(p.photo),tx.get(share.request)]);
+    if(!observation.exists()||!photo.exists())throw new Error('기록이 삭제되었습니다. 목록을 다시 불러와주세요.');
+    const old=observation.data(),before=recordPhotos(photo.data());
+    if(photo.data().lastEditId===editId){if(!samePhotos(before,images))throw new Error('같은 저장 요청의 사진이 달라졌어요. 최신 기록을 다시 불러와주세요.');return {record:{...old,id:row.id},photos:before};}
+    if(old.revision!==row.revision)throw new Error('다른 기기에서 기록이 바뀌었어요. 변경 중인 사진을 확인한 뒤 최신 기록을 다시 불러와주세요.');
+    if(samePhotos(before,images))return {record:{...old,id:row.id},photos:before};
+    const data=photoEditRecord(old,before,images);validateDraft({...data,id:row.id});
+    invalidateShare(tx,share,submission);tx.set(p.ob,data);tx.set(p.photo,{...target,lastEditId:editId});
+    return {record:{...data,id:row.id},photos:[...images]};
+   });
+  },
+  async add(uid,value){owner(uid);validateDraft(value);const photos=photoDocument(uid,value);const p=paths(uid,value.id);
    return runTransaction(db,async tx=>{owner(uid);const existing=await tx.get(p.ob);if(existing.exists())return existing.data();
-    const {imageData,id,...fields}=value;const data={...fields,ownerId:uid,schemaVersion:3,revision:1,shareStatus:'private',speciesId:null,observedAt:null};
-    tx.set(p.ob,data);tx.set(p.photo,{ownerId:uid,imageData,schemaVersion:3});return data;});},
+    const {imageData,additionalImages,id,...fields}=value;const data={...fields,ownerId:uid,schemaVersion:3,revision:1,shareStatus:'private',speciesId:null,observedAt:null};
+    tx.set(p.ob,data);tx.set(p.photo,photos);return data;});},
   async edit(uid,row,patch){owner(uid);const p=paths(uid,row.id);return runTransaction(db,async tx=>{owner(uid);const s=await tx.get(p.ob);if(!s.exists())throw new Error('기록이 삭제되었습니다. 새로고침해주세요.');const share=shareRefs(db,row.id),submission=await tx.get(share.request);const old=s.data();if(old.revision!==row.revision)throw new Error('다른 기기에서 수정된 기록입니다. 새로고침 후 다시 수정해주세요.');const data={...applyTextEdit(old,patch),revision:old.revision+1,updatedAt:Math.max(Date.now(),old.updatedAt+1)};validateDraft({...data,id:row.id});invalidateShare(tx,share,submission);tx.set(p.ob,data);return data;});},
   async remove(uid,row){owner(uid);const p=paths(uid,row.id);return runTransaction(db,async tx=>{owner(uid);const s=await tx.get(p.ob);if(!s.exists())return;const share=shareRefs(db,row.id),submission=await tx.get(share.request);if(s.data().revision!==row.revision)throw new Error('다른 기기에서 수정된 기록입니다. 새로고침 후 삭제해주세요.');invalidateShare(tx,share,submission);tx.delete(p.ob);tx.delete(p.photo);});}
  };
- cached={auth,repo,identifyEndpoint:config.identifyEndpoint||'',token:()=>{if(!auth.currentUser)throw new Error('로그인이 필요합니다.');return auth.currentUser.getIdToken();},sharing:createSharing(db,auth),subscribe:callback=>onAuthStateChanged(auth,callback),login:(email,password)=>signInWithEmailAndPassword(auth,email,password),signup:(email,password)=>createUserWithEmailAndPassword(auth,email,password),logout:()=>signOut(auth),reset:email=>sendPasswordResetEmail(auth,email)};return cached;
+ cached={auth,repo,places:createTreePlaces(db,auth),identifyEndpoint:config.identifyEndpoint||'',token:()=>{if(!auth.currentUser)throw new Error('로그인이 필요합니다.');return auth.currentUser.getIdToken();},sharing:createSharing(db,auth),subscribe:callback=>onAuthStateChanged(auth,callback),login:(email,password)=>signInWithEmailAndPassword(auth,email,password),signup:(email,password)=>createUserWithEmailAndPassword(auth,email,password),logout:()=>signOut(auth),reset:email=>sendPasswordResetEmail(auth,email)};return cached;
 }
 export async function smallPhoto(photo,signal){
  const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('사진을 열 수 없습니다.'));image.src=photo.dataUrl;});

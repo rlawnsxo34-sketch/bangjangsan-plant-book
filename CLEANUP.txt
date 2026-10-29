@@ -1,0 +1,66 @@
+정리 내역
+
+실행 코드·설정·테스트·이미지 원본은 유지했습니다.
+이전 버전은 적용 전 백업 폴더에서 보관하세요.
+
+제외한 파일:
+CARD_IMAGE_UPDATE.txt
+CENTER_SELECTION_UPDATE.txt
+DISCOVERY_BOOK_UPDATE.txt
+DRAFT_RECOVERY_UPDATE.txt
+EASY_WORDS_UPDATE.txt
+HOME_SCREEN_UPDATE.txt
+KOREAN_NAMES_UPDATE.txt
+LOGO_AND_START_UPDATE.txt
+LOGO_REPLACEMENT.txt
+MOBILE_UPDATE.txt
+REFERENCE_PHOTOS_UPDATE.txt
+VISITOR_EXPERIENCE_UPDATE.txt
+WINDOWS_TEST_FIX.txt
+build-meta.json
+code_artifact.html
+docs/forest-design/ACCEPTANCE.txt
+docs/forest-design/DESIGN.txt
+docs/forest-design/START_HERE.txt
+docs/forest-design/contracts.ts
+docs/forest-design/demo-data.json
+verification/CENTER_SUMMARY.txt
+verification/DISCOVERY_SUMMARY.txt
+verification/INSTALL_SUMMARY.txt
+verification/KOREAN_SUMMARY.txt
+verification/MOBILE_SUMMARY.txt
+verification/REFERENCE_SUMMARY.txt
+verification/SUMMARY.txt
+verification/ai-integration-results.txt
+verification/build-results.txt
+verification/build-v16.txt
+verification/build-v17-windows-fix.txt
+verification/build-v17.txt
+verification/build-v18.txt
+verification/build-v19.txt
+verification/build-v20.txt
+verification/korean-path-v17-windows-fix.txt
+verification/korean-path-v18.txt
+verification/korean-path-v19.txt
+verification/korean-path-v20.txt
+verification/logo-replacement.txt
+verification/static-v16.txt
+verification/static-v17-windows-fix.txt
+verification/static-v17.txt
+verification/static-v18.txt
+verification/static-v19.txt
+verification/static-v20.txt
+verification/unit-results.txt
+verification/unit-v16.txt
+verification/unit-v17-initial.txt
+verification/unit-v17-windows-fix.txt
+verification/unit-v17.txt
+verification/unit-v18.txt
+verification/unit-v19-initial.txt
+verification/unit-v19.txt
+verification/unit-v20.txt
+verification/worker-results.txt
+
+중복 code_artifact.html 및 build-meta.json을 다시 만들지 않도록 build.mjs를 수정했습니다.
+배포는 dist/index.html을 사용합니다. dist는 빌드로 다시 생성되며 Git 추적 제외 대상으로 추가했습니다.
+이미 Git에 등록된 dist 파일은 이 설정만으로 추적이 해제되지 않습니다.

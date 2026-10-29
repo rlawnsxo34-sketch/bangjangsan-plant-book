@@ -1,4 +1,4 @@
-import {validatePhoto} from './cloud-model.js';
+import {recordPhotos} from './record-photos.js';
 import {validCenterId} from './center-model.js';
 export const DRAFT_TTL=7*24*60*60*1000;
 export const DRAFT_LIMIT=20;
@@ -11,11 +11,12 @@ export function hasDraft(d){return !!(d?.imageData||d?.name||d?.description||d?.
 export function cleanDraft(d,centerId){
  if(!d||d.centerId!==centerId)throw new Error('임시 기록의 관찰 기관이 다릅니다.');
  for(const [key,max] of [['name',80],['description',1000],['centerName',80]])if(typeof d[key]!=='string'||d[key].length>max)throw new Error('임시 기록 내용을 확인해주세요.');
- if(d.imageData!==null)validatePhoto(d.imageData);
+ recordPhotos(d);
  const p=d.location;
  if(p!==null&&(!p||!Number.isFinite(p.lat)||Math.abs(p.lat)>90||!Number.isFinite(p.lng)||Math.abs(p.lng)>180))throw new Error('임시 기록 좌표가 올바르지 않습니다.');
  if(!['gps','map','center_only'].includes(d.locationSource)||(d.locationSource==='center_only')!==(p===null))throw new Error('임시 기록 위치 정보가 올바르지 않습니다.');
  const result={name:d.name,description:d.description,centerId,centerName:d.centerName,imageData:d.imageData,location:p?{lat:p.lat,lng:p.lng}:null,locationSource:d.locationSource};
+ if(d.additionalImages?.length)result.additionalImages=[...d.additionalImages];
  const a=d.aiSelection;
  if(a?.provider==='plantnet'&&typeof a.scientificName==='string'&&a.scientificName.length>0&&a.scientificName.length<=200&&typeof a.commonName==='string'&&a.commonName.length<=200&&(a.score===null||(Number.isFinite(a.score)&&a.score>=0&&a.score<=1))&&Number.isSafeInteger(a.selectedAt)&&a.selectedAt>0)result.aiSelection={provider:'plantnet',scientificName:a.scientificName,commonName:a.commonName,score:a.score,selectedAt:a.selectedAt};
  return result;

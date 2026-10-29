@@ -1,0 +1,5 @@
+npm run build PASS
+Uploaded/public/dist logo bytes match
+Intrinsic dimensions updated: 1600x529
+Card example re-rendered with same Node Canvas drawing code
+Actual browser/mobile/deployment not run
