@@ -16,7 +16,7 @@
         "headers": [
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; manifest-src 'self'; script-src 'self' 'sha256-4pbxP+ufIKcIyikfgru97lNWM/SlLaR7pd/6CH0LjUk=' https://dapi.kakao.com https://t1.daumcdn.net/mapjsapi/; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://bs.plantnet.org https://*.daumcdn.net https://*.kakao.com; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://forest-plant-identify.plant-book.workers.dev https://dapi.kakao.com https://*.daumcdn.net; frame-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+            "value": "default-src 'self'; manifest-src 'self'; script-src 'self' 'sha256-KDa0UNLx1hWQ8JccOgc7/LU56qMW02gtGsWgeTV9eQg=' https://dapi.kakao.com https://t1.daumcdn.net/mapjsapi/ https://t1.kakaocdn.net/mapjsapi/; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://bs.plantnet.org https://*.daumcdn.net https://*.kakao.com https://*.kakaocdn.net; connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://forest-plant-identify.plant-book.workers.dev https://dapi.kakao.com https://*.daumcdn.net https://*.kakaocdn.net; frame-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
           },
           {
             "key": "X-Content-Type-Options",

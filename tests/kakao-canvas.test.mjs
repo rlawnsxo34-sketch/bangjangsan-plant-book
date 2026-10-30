@@ -18,6 +18,7 @@ test('actual map adapter selects registered markers, gates location picking, res
  const props={apiKey:'fake',centerName:'기관',markers:rows,load,onSelect:id=>selected=id,onPick:p=>picked=p};
  await act(async()=>root=create(React.createElement(Canvas,props),{createNodeMock:()=>({})}));
  await act(async()=>events.get(markers[0])());assert.equal(selected,'hinoki');await act(async()=>events.get(instance)({latLng:new LatLng(35.1,126.1)}));assert.equal(picked,undefined);
+ await act(async()=>root.update(React.createElement(Canvas,{...props,focusPoint:{lat:35.2,lng:126.2}})));assert.equal(instance.getCenter().getLat(),35.2);assert.equal(instance.getCenter().getLng(),126.2);
  await act(async()=>root.update(React.createElement(Canvas,{...props,editable:true})));await act(async()=>events.get(instance)({latLng:new LatLng(35.1,126.1)}));assert.deepEqual(picked,{lat:35.1,lng:126.1});observer();assert.equal(instance.resized,true);
  await act(async()=>root.unmount());assert.equal(events.size,0);assert.equal(markers[0].onMap,null);assert.ok(disconnected);delete globalThis.ResizeObserver;
 });

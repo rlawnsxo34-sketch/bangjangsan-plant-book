@@ -22,3 +22,14 @@ test('failed PNG encoding reports an error instead of claiming a saved image',as
 test('sentence-ending punctuation does not occupy a line on its own',()=>{const wrapped=wrapCardText('가나다라.',s=>s.length,4,4);assert.deepEqual(wrapped.lines,['가나다','라.']);});
 
 test('native browser error text is replaced by a readable Korean recovery message',async()=>{const states=[];const c=createCardController({render:async()=>{throw new TypeError('Failed to encode canvas');},createURL:()=>'',revokeURL:()=>{},onChange:s=>states.push(s)});c.setSource(cardModel(visit(),'장성'),'a');await c.prepare();assert.equal(states.at(-1).phase,'error');assert.ok(states.at(-1).message.includes('글 파일'));assert.ok(!states.at(-1).message.includes('Failed'));c.dispose();});
+
+test('reaction-only cards carry the chosen feelings without claiming an observed tree or leaking raw fields',async()=>{
+ const source=updateVisit(newVisit('jangseong',1),'hinoki',{reactions:['color','unsure','email@example.test']});
+ const model=cardModel({...source,email:'secret',location:{lat:35,lng:126}},'장성');
+ assert.equal(model.observedCount,0);assert.equal(model.entries[0].note,'');assert.deepEqual(model.entries[0].reactions,['색이 눈에 띄어요','구별하기 어려워요']);assert.ok(!JSON.stringify(model).includes('email@example.test'));
+ const f=fakeDocument();await renderRecordCard(model,{document:f.document,ImageCtor:null});assert.ok(f.texts.some(t=>t.includes('구별하기 어려워요')));assert.ok(f.texts.includes('살펴본 표시는 하지 않았어요'));
+});
+test('all three full notes and reactions stay within the bounded card even with a long institution name',()=>{
+ let v=newVisit('jangseong',1);for(const id of ['hinoki','galcham-oak','japanese-maple'])v=updateVisit(v,id,{note:'가'.repeat(300),reactions:['leaf-shape','color','unsure']});
+ const layout=layoutCard(cardModel(v,'장'.repeat(80)),(s,size)=>Array.from(s).length*size);assert.ok(layout.height<=CARD_MAX_HEIGHT);assert.equal(layout.truncated,false);
+});

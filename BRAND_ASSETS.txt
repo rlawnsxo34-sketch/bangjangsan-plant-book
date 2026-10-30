@@ -1,9 +1,5 @@
-v19 가로형 로고: public/brand/egmy-horizontal-v19.png
-사용자가 제공한 ㅇㄱㅁㅇ_가로형(2).png를 수정 없이 사용합니다. 적용 절차는 START_HERE.txt를 보세요. 새 원본의 가로세로 비율을 그대로 유지합니다.
-
-사용자 제공 원본 이미지
-01.관찰포이_봄.png — 캐릭터
-국립장성숲체원-_국문좌우_이미지형.png — 기관 로고
-src/brand-assets.js에 원본 PNG 바이트를 data URL로 포함했습니다.
-원본을 다시 그리거나 자르거나 변형하지 않았습니다. CSS 크기 조정으로 표시합니다.
-명칭: ㅇㄱㅁㅇ / 이건뭐야
+상단 로고: public/brand/egmy-header-v45.png
+사용자가 첨부한 57736.png 원본을 변형 없이 사용합니다. 크기 1600×529.
+기록 카드·공유용 가로 로고: public/brand/egmy-horizontal-v39.png
+캐릭터: public/brand/egmy-character-v39.png
+기관 로고: 기존 src/brand-assets.js 유지.

@@ -18,7 +18,7 @@ const js=result.outputFiles.find(file=>!file.path.endsWith('.LEGAL.txt')).text.r
 const cfg=JSON.parse(await readFile('public-config.json','utf8'));
 const publicBase=new URL(cfg.publicSiteUrl||'https://'+cfg.firebase.projectId+'.web.app/');
 if(publicBase.protocol!=='https:'||publicBase.username||publicBase.password||publicBase.search||publicBase.hash||publicBase.pathname!=='/')throw new Error('publicSiteUrl must be an HTTPS origin with no path');
-const template=(await readFile('index.template.html','utf8')).replaceAll('__PUBLIC_BASE__',publicBase.href).replaceAll('__SHARE_IMAGE_URL__',new URL('brand/egmy-share-v15.png',publicBase).href);
+const template=(await readFile('index.template.html','utf8')).replaceAll('__PUBLIC_BASE__',publicBase.href).replaceAll('__SHARE_IMAGE_URL__',new URL('brand/egmy-horizontal-v39.png',publicBase).href);
 const html=template.replace('__APP_CSS__',()=>css).replace('__APP_JS__',()=>js);
 await writeFile('dist/index.html',html);
 await cp('public','dist',{recursive:true,filter:source=>!source.endsWith('/README.txt')});
@@ -28,7 +28,7 @@ await rm('dist/styles.css');
 const hash=value=>"'sha256-"+createHash('sha256').update(value).digest('base64')+"'";
 let aiConnect='';if(cfg.identifyEndpoint){const endpoint=new URL(cfg.identifyEndpoint);if(endpoint.protocol!=='https:'||endpoint.pathname!=='/identify'||endpoint.search||endpoint.hash||endpoint.username||endpoint.password)throw new Error('identifyEndpoint must be HTTPS /identify');aiConnect=' '+endpoint.origin;}
 const emulatorConnect=cfg.emulators?.enabled?' http://127.0.0.1:8080 http://127.0.0.1:9099':'';
-const csp=["default-src 'self'","manifest-src 'self'","script-src 'self' "+hash(js)+" https://dapi.kakao.com https://t1.daumcdn.net/mapjsapi/","style-src 'self' 'unsafe-inline'","font-src 'self' data:","img-src 'self' data: blob: "+REFERENCE_IMAGE_ORIGIN+" https://*.daumcdn.net https://*.kakao.com","connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com"+emulatorConnect+aiConnect+" https://dapi.kakao.com https://*.daumcdn.net","frame-src 'none'","object-src 'none'","base-uri 'self'","frame-ancestors 'none'"].join('; ');
+const csp=["default-src 'self'","manifest-src 'self'","script-src 'self' "+hash(js)+" https://dapi.kakao.com https://t1.daumcdn.net/mapjsapi/ https://t1.kakaocdn.net/mapjsapi/","style-src 'self' 'unsafe-inline'","font-src 'self' data:","img-src 'self' data: blob: "+REFERENCE_IMAGE_ORIGIN+" https://*.daumcdn.net https://*.kakao.com https://*.kakaocdn.net","connect-src https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com"+emulatorConnect+aiConnect+" https://dapi.kakao.com https://*.daumcdn.net https://*.kakaocdn.net","frame-src 'none'","object-src 'none'","base-uri 'self'","frame-ancestors 'none'"].join('; ');
 const firebase={firestore:{rules:'firestore.rules',indexes:'firestore.indexes.json'}};
 firebase.hosting={public:'dist',ignore:['firebase.json','**/.*','**/node_modules/**'],headers:[{source:'**',headers:[{key:'Content-Security-Policy',value:csp},{key:'X-Content-Type-Options',value:'nosniff'},{key:'Referrer-Policy',value:'strict-origin-when-cross-origin'},{key:'X-Frame-Options',value:'DENY'},{key:'Permissions-Policy',value:'camera=(self), geolocation=(self), microphone=()'},{key:'Cache-Control',value:'no-store'}]}]};
 await writeFile('firebase.json',JSON.stringify(firebase,null,2)+'\n');

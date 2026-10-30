@@ -32,3 +32,5 @@ tests/.place-map-test-*.mjs
 tests/.tree-map-test-*.mjs
 
 tests/.kakao-canvas-test-*.mjs
+
+/backup-cleanup/

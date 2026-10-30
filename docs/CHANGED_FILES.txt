@@ -1,34 +1,21 @@
-v31에서 변경한 파일
-.gitignore
-PLACE_MAP_SETUP.txt
+v45 대비 v46 변경·추가 파일
 README.txt
 START_HERE.txt
-TREE_MAP_SETUP.txt
-TREE_PLACE_SETUP.txt
-build.mjs
-dist/LICENSES.txt
 dist/index.html
-docs/CHANGED_FILES.txt
 firebase.json
-firestore.rules
 package-lock.json
 package.json
-public-config.json
-src/CloudApp.jsx
-src/ExperiencePanel.jsx
-src/KakaoTreeCanvas.jsx
-src/ObservationPlace.jsx
-src/TreeMapPanel.jsx
-src/cloud-runtime.js
-src/kakao-loader.js
-src/observation-places.js
+src/PlaceGuidePhoto.jsx
+src/TreePhotos.jsx
 src/styles.css
-src/tree-map-model.js
-src/tree-place-runtime.js
 tests/experience-ui.test.mjs
-tests/kakao-canvas.test.mjs
-tests/kakao-loader.test.mjs
-tests/tree-map-rules.test.mjs
-tests/tree-map-ui.test.mjs
-tests/tree-map.test.mjs
+tests/place-guide-photos.test.mjs
 verification/current-checks.txt
+USER_GUIDE.txt
+src/photo-history.js
+src/PhotoViewer.jsx
+tests/photo-history.test.mjs
+tests/photo-viewer.test.mjs
+docs/CHANGED_FILES.txt
+
+설정·로고·사진·서버·접근 규칙 유지.

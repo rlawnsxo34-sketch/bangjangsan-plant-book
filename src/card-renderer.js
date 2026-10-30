@@ -1,5 +1,5 @@
 import {layoutCard} from './record-card.js';
-export const CARD_LOGO_PATH='/brand/egmy-horizontal-v19.png';
+export const CARD_LOGO_PATH='/brand/egmy-horizontal-v39.png';
 export function abortError(){return new DOMException('이미지 만들기를 취소했어요.','AbortError');}
 function check(signal){if(signal?.aborted)throw abortError();}
 export function waitForCard(promise,{signal,timeout=10000,message='이미지 준비가 오래 걸려요. 잠시 후 다시 해주세요.'}={}){
@@ -32,7 +32,7 @@ export async function renderRecordCard(model,{signal,document=globalThis.documen
  check(signal);if(!document?.createElement)throw new Error('이 기기에서는 이미지 만들기를 지원하지 않아요. 글 파일로 받아주세요.');
  let logo=null,fontFallback=false;
  // No remote photos, private coordinates or account data are requested.
- const fontJob=(async()=>{if(!document.fonts?.load)return;try{await waitForCard(document.fonts.load('400 36px "Noto Sans KR"','ㅇㄱㅁㅇ 이건뭐야 오늘의 나무 이야기 내가 남긴 숲 이야기 선택한 숲체원 기록을 시작한 날 살펴봤다고 표시한 나무 가지 표시 없이 적은 글이에요 아직 글이 없어요 길어 일부만 담았어요 전체 내용은 파일로 받아주세요 고른 장소와 직접 방문 사실이나 식물 이름을 증명하지 않아요 …'+model.dateLabel+model.centerName+model.entries.map(x=>x.note+x.name).join('')),{signal,timeout:5000});}catch(e){check(signal);fontFallback=true;}})();
+ const fontJob=(async()=>{if(!document.fonts?.load)return;try{await waitForCard(document.fonts.load('400 36px "Noto Sans KR"','ㅇㄱㅁㅇ 이건뭐야 오늘의 나무 이야기 내가 남긴 숲 이야기 선택한 숲체원 기록을 시작한 날 살펴봤다고 표시한 나무 가지 표시 없이 적은 글이에요 아직 글이 없어요 길어 일부만 담았어요 전체 내용은 파일로 받아주세요 고른 장소와 직접 방문 사실이나 식물 이름을 증명하지 않아요 …'+model.dateLabel+model.centerName+model.entries.map(x=>x.note+x.name+(x.reactions||[]).join('')).join('')),{signal,timeout:5000});}catch(e){check(signal);fontFallback=true;}})();
  const logoJob=(async()=>{try{logo=await loadLogo(document,ImageCtor,signal);}catch(e){check(signal);}})();
  await Promise.all([fontJob,logoJob]);check(signal);
  const canvas=document.createElement('canvas');

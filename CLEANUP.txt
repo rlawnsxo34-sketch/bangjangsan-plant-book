@@ -1,66 +1,53 @@
-정리 내역
+v44 파일 정리
 
-실행 코드·설정·테스트·이미지 원본은 유지했습니다.
-이전 버전은 적용 전 백업 폴더에서 보관하세요.
+이번 ZIP에서는 아래 31개 이전 파일을 제외했습니다.
+예전 버전별 업데이트 안내를 USER_GUIDE.txt 하나로 합쳤습니다.
+현재 로고를 사용하도록 홈 화면 추가 안내를 고치고, 이전 로고·아이콘·예시 이미지를 제외했습니다.
+실행 코드·설정·검사·현재 원본 사진과 로고·법적 출처 표시는 유지했습니다.
 
-제외한 파일:
-CARD_IMAGE_UPDATE.txt
-CENTER_SELECTION_UPDATE.txt
-DISCOVERY_BOOK_UPDATE.txt
-DRAFT_RECOVERY_UPDATE.txt
-EASY_WORDS_UPDATE.txt
-HOME_SCREEN_UPDATE.txt
-KOREAN_NAMES_UPDATE.txt
-LOGO_AND_START_UPDATE.txt
-LOGO_REPLACEMENT.txt
-MOBILE_UPDATE.txt
-REFERENCE_PHOTOS_UPDATE.txt
-VISITOR_EXPERIENCE_UPDATE.txt
-WINDOWS_TEST_FIX.txt
-build-meta.json
-code_artifact.html
-docs/forest-design/ACCEPTANCE.txt
-docs/forest-design/DESIGN.txt
-docs/forest-design/START_HERE.txt
-docs/forest-design/contracts.ts
-docs/forest-design/demo-data.json
-verification/CENTER_SUMMARY.txt
-verification/DISCOVERY_SUMMARY.txt
-verification/INSTALL_SUMMARY.txt
-verification/KOREAN_SUMMARY.txt
-verification/MOBILE_SUMMARY.txt
-verification/REFERENCE_SUMMARY.txt
-verification/SUMMARY.txt
-verification/ai-integration-results.txt
-verification/build-results.txt
-verification/build-v16.txt
-verification/build-v17-windows-fix.txt
-verification/build-v17.txt
-verification/build-v18.txt
-verification/build-v19.txt
-verification/build-v20.txt
-verification/korean-path-v17-windows-fix.txt
-verification/korean-path-v18.txt
-verification/korean-path-v19.txt
-verification/korean-path-v20.txt
-verification/logo-replacement.txt
-verification/static-v16.txt
-verification/static-v17-windows-fix.txt
-verification/static-v17.txt
-verification/static-v18.txt
-verification/static-v19.txt
-verification/static-v20.txt
-verification/unit-results.txt
-verification/unit-v16.txt
-verification/unit-v17-initial.txt
-verification/unit-v17-windows-fix.txt
-verification/unit-v17.txt
-verification/unit-v18.txt
-verification/unit-v19-initial.txt
-verification/unit-v19.txt
-verification/unit-v20.txt
-verification/worker-results.txt
+기존 PC 폴더에서는 새 파일을 복사해도 예전 파일이 자동으로 지워지지 않습니다.
+프로젝트 전체를 먼저 백업한 뒤 다음 명령을 사용하세요.
+npm run cleanup
+  대상 목록만 확인합니다. 아무 파일도 지우지 않습니다.
+npm run cleanup -- --apply
+  지정된 대상만 backup-cleanup/날짜-번호 아래에 원래 경로대로 백업한 뒤 지웁니다.
+  먼저 모든 대상의 백업을 확인하며, 파일이 도중에 바뀌면 정리를 멈춥니다.
+  목록에 없는 파일과 설정·식물 사진·현재 로고는 건드리지 않습니다.
+  바로가기나 외부 폴더를 가리키는 파일은 정리하지 않습니다.
+  백업은 나중에 직접 확인한 뒤 보관하거나 지워주세요.
+새 ZIP만 푼 폴더라면 정리할 이전 파일이 없다고 나오는 것이 정상입니다.
+node_modules는 설치 파일이고 dist는 배포 파일이므로 이 정리에서 제거하지 않습니다.
+브라우저·Firebase에 저장한 이용자 기록도 삭제하지 않습니다.
 
-중복 code_artifact.html 및 build-meta.json을 다시 만들지 않도록 build.mjs를 수정했습니다.
-배포는 dist/index.html을 사용합니다. dist는 빌드로 다시 생성되며 Git 추적 제외 대상으로 추가했습니다.
-이미 Git에 등록된 dist 파일은 이 설정만으로 추적이 해제되지 않습니다.
+대상 목록
+BRAND_AND_SEARCH_SETUP.txt
+LOGIN_HANDOFF_SETUP.txt
+MAP_LOAD_FIX.txt
+MAP_OBSERVATION_SETUP.txt
+PLACE_FIRST_SETUP.txt
+PLACE_MAP_SETUP.txt
+RECORD_ORDER_SETUP.txt
+SIMPLE_START_SETUP.txt
+TREE_PHOTO_SETUP.txt
+TREE_PLACE_SETUP.txt
+UNNAMED_RECORDS_SETUP.txt
+VISITOR_DISCOVERY_SETUP.txt
+NAME_SOURCE_SETUP.txt
+CANDIDATE_NEXT_SETUP.txt
+assets-source/README.txt
+assets-source/egmy-original.png
+assets-source/icon-frame.svg
+assets-source/share-frame.svg
+docs/card-example-v21.png
+public/brand/egmy-horizontal-v19.png
+public/brand/egmy-share-v15.png
+public/icons/egmy-32-v15.png
+public/icons/egmy-180-v15.png
+public/icons/egmy-192-v15.png
+public/icons/egmy-512-v15.png
+dist/brand/egmy-horizontal-v19.png
+dist/brand/egmy-share-v15.png
+dist/icons/egmy-32-v15.png
+dist/icons/egmy-180-v15.png
+dist/icons/egmy-192-v15.png
+dist/icons/egmy-512-v15.png

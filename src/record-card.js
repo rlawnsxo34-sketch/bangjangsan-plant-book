@@ -1,4 +1,5 @@
 import {visitRows,VISIT_NOTE_LIMIT} from './experience-model.js';
+import {reactionLabels} from './visit-reactions.js';
 export const CARD_WIDTH=1080;
 export const CARD_MAX_HEIGHT=4096;
 const MARGIN=72,CONTENT=CARD_WIDTH-MARGIN*2;
@@ -11,7 +12,7 @@ export function cardModel(visit,centerName){
  const date=new Date(visit.startedAt);
  if(!Number.isSafeInteger(visit.startedAt)||visit.startedAt<=0||!Number.isFinite(date.getTime()))throw new Error('기록 날짜를 확인해주세요.');
  const parts=Object.fromEntries(new Intl.DateTimeFormat('en',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).map(p=>[p.type,p.value]));
- return {centerName:centerName.trim(),dateLabel:date.toLocaleDateString('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'long',day:'numeric'}),day:`${parts.year}-${parts.month}-${parts.day}`,observedCount:rows.filter(r=>r.observed).length,entries:rows.slice(0,3).map(r=>({name:String(r.tree.name).slice(0,80),observed:r.observed,note:r.note.slice(0,VISIT_NOTE_LIMIT).trim()}))};
+ return {centerName:centerName.trim(),dateLabel:date.toLocaleDateString('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'long',day:'numeric'}),day:`${parts.year}-${parts.month}-${parts.day}`,observedCount:rows.filter(r=>r.observed).length,entries:rows.slice(0,3).map(r=>({name:String(r.tree.name).slice(0,80),observed:r.observed,note:r.note.slice(0,VISIT_NOTE_LIMIT).trim(),...(r.reactions?.length?{reactions:reactionLabels(r)}:{})}))};
 }
 export function cardFilename(model){return `egmy-record-${model.day}.png`;}
 export function wrapCardText(input,measure,maxWidth,maxLines){
@@ -38,16 +39,18 @@ export function wrapCardText(input,measure,maxWidth,maxLines){
 export function layoutCard(model,measure){
  const commands=[];let y=260,truncated=false;
  function text(value,size,lineHeight,maxLines,color='#173d31',weight=400){const wrapped=wrapCardText(value,s=>measure(s,size,weight),CONTENT,maxLines);truncated ||= wrapped.truncated;commands.push({type:'text',lines:wrapped.lines,x:MARGIN,y,size,lineHeight,color,weight});y+=wrapped.lines.length*lineHeight;}
- text('내가 남긴 숲 이야기',62,80,1,'#173d31',700);y+=16;
+ text('오늘의 발견',62,80,1,'#173d31',700);y+=16;
  text('선택한 숲체원',26,36,1,'#637359');y+=4;
  text(model.centerName,36,50,4,'#173d31',700);y+=16;
  text(`기록을 시작한 날 · ${model.dateLabel}`,28,40,1,'#637359');y+=8;
- text(`살펴봤다고 표시한 나무 ${model.observedCount}가지`,32,44,1,'#075640',700);y+=28;
+ text(`발견을 남긴 나무 ${model.entries.length}가지`,32,44,1,'#075640',700);y+=4;
+ text(`살펴봤다고 표시한 나무 ${model.observedCount}가지`,26,38,1,'#637359');y+=22;
  for(const entry of model.entries){
   commands.push({type:'line',x:MARGIN,y,width:CONTENT,color:'#d7e2cf'});y+=24;
   text(entry.name,42,56,2,'#173d31',700);y+=4;
-  text(entry.observed?'살펴봤다고 표시했어요':'표시 없이 적은 글이에요',26,38,1,'#637359');y+=10;
-  text(entry.note||'아직 적은 글이 없어요.',36,52,14);y+=32;
+  text(entry.observed?'살펴봤다고 표시했어요':'살펴본 표시는 하지 않았어요',26,38,1,'#637359');y+=10;
+  if(entry.reactions?.length){text('내가 고른 느낌',24,34,1,'#637359');text(entry.reactions.join(' · '),30,42,4,'#075640',700);y+=8;}
+  if(entry.note||!entry.reactions?.length)text(entry.note||'아직 적은 글이 없어요.',36,52,14);y+=32;
  }
  commands.push({type:'line',x:MARGIN,y,width:CONTENT,color:'#d7e2cf'});y+=22;
  if(truncated){text('글이 길어 일부만 담았어요.',24,34,1,'#815a25');text('전체 내용은 글 파일로 받아주세요.',24,34,1,'#815a25');y+=10;}

@@ -1,76 +1,96 @@
-v32 적용 안내 — 나무 지도와 담당자 지도 위치 등록
+v46 적용 안내 — 크게 본 사진에서 뒤로가기
 
-이번 버전은 새 Firestore 규칙과 카카오 지도 설정이 필요합니다.
-처음부터 따라 하는 방법: TREE_MAP_SETUP.txt
+기존 프로젝트를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.
+src/PhotoViewer.jsx (새 파일)
+src/photo-history.js (새 파일)
+src/TreePhotos.jsx
+src/PlaceGuidePhoto.jsx
+src/styles.css
+tests/photo-history.test.mjs (새 파일)
+tests/photo-viewer.test.mjs (새 파일)
+tests/experience-ui.test.mjs
+tests/place-guide-photos.test.mjs
+package.json / package-lock.json
 
-1. 기존 프로젝트 전체를 백업합니다.
-2. ZIP을 새 폴더에 풀고 본인 설정·현장 자료를 아래 상세 안내대로 보존합니다.
-3. public-config.json의 기존 Firebase·Pl@ntNet 설정을 유지하고 kakaoMap.javascriptKey를 추가합니다.
-4. 카카오 개발자 사이트에서 지도 사용 설정과 JavaScript SDK 도메인을 등록합니다.
-5. 프로젝트 루트에서 실행합니다.
-   npm ci
-   npm test
-   npm run build
-6. 규칙부터 배포합니다.
-   firebase deploy --only firestore --project plant-book-84803
-7. 화면을 배포합니다.
-   firebase deploy --only hosting --project plant-book-84803
-8. 기존 담당자 계정으로 로그인 → 숲 둘러보기 → 나무 지도에서 위치를 고르고 공개합니다.
-9. 로그인하지 않은 다른 기기에서 같은 기관의 나무 표시와 사진을 확인합니다.
-
-본인 public-config.json, backend/wrangler.jsonc, .firebaserc(있을 때), .git,
-src/experience-data.js, src/observation-places.js의 기관 ID·장소 설정과 추가 자료를 보존하세요.
-Firebase init과 Worker 재배포는 하지 않습니다. 브라우저 저장 데이터도 지우지 마세요.
-지도 등록은 기존 기관 담당자 권한을 사용합니다.
-실제 위치는 임의 등록하지 않았습니다. 지도에서 확인해 공개해야 나무 표시가 나옵니다.
-변경 파일: docs/CHANGED_FILES.txt
-검증: verification/current-checks.txt
-
-아래는 새 폴더로 옮길 때의 상세 안내입니다.
-
-정리본 적용 순서 — 이미 배포 중인 프로젝트 기준
-
-1. 전체 백업
-기존 bangjangsan-plant-book 폴더를 다른 위치에 복사해 보관하세요. 작업 중인 파일을 먼저 저장하세요.
-기존 파일을 바로 전부 삭제하지 마세요.
-
-2. 새 폴더 준비
-이 ZIP을 별도의 새 폴더에 압축 해제하세요. 기존 폴더 위에 덮어쓰면 옛 파일이 남으므로 정리 효과가 없습니다.
-새 폴더 안에 package.json, src, public이 바로 보이는지 확인하세요.
-
-3. 본인 자료 옮기기
-백업에서 아래 자료를 새 폴더에 복사하세요.
-- public-config.json: 본인 Firebase·서버 연결 설정
-- src/experience-data.js: v24에서 사용하던 본인 현장 자료를 유지합니다. 더 오래된 버전의 굴참나무 사진·장소는 갈참나무에 재사용하지 마세요.
-- 직접 추가한 사진 및 기타 수정한 소스: 변경 내용을 비교해 옮기세요. public 폴더 전체를 덮어쓰면 새 로고가 예전 것으로 바뀔 수 있습니다.
-- backend/wrangler.jsonc: 본인 서버 설정을 수정했다면 유지
-- .firebaserc: 기존 파일이 있을 때만 복사
-- .git 폴더: 같은 GitHub 저장소와 이력을 이어가려면 복사 (Windows 숨김 항목 표시 필요)
-- .dev.vars 등 개인 환경설정: 필요할 때만 본인 PC에서 옮기고 GitHub에는 올리지 마세요.
-Firestore 규칙·인덱스·빌드 파일을 직접 수정한 경우에도 먼저 차이를 비교하세요.
-node_modules, dist, .firebase, backend/.wrangler와 예전 압축파일은 옮기지 않습니다.
-브라우저 내부 기기 기록은 파일 복사로 이동하지 않습니다. 필요한 기록은 앱에서 별도 백업하세요.
-
-4. 설치와 확인
-새 폴더에서 터미널을 열고 차례대로 실행하세요.
-npm ci
+주신 public-config.json, 상단 로고와 식물 사진은 그대로 유지했습니다.
+프로젝트 폴더에서 다음 명령을 순서대로 실행하세요.
 npm test
 npm run build
-
-회사 PC에서 이전에 인증서 설정이 필요했다면 같은 명령 프롬프트에서 먼저 실행합니다.
-set "NODE_USE_SYSTEM_CA=1"
-
-5. 화면 배포
 firebase deploy --only hosting --project plant-book-84803
-Firebase init은 다시 실행하지 않습니다. v32에서는 위 순서대로 새 Firestore 규칙을 먼저 배포해야 합니다. Worker는 재배포하지 않습니다.
-Hosting은 dist를 사용하므로 빌드가 끝난 뒤 배포하세요.
-기존 QR 주소로 앱을 열어 로고·사진 검색·내 도감·기록 카드를 확인하세요. 브라우저 데이터는 지우지 마세요.
 
-6. GitHub 연결
-새 폴더에 기존 .git을 옮겼다면 GitHub Desktop에서 기존 항목 대신 새 폴더를 Add local repository로 선택하세요.
-Changes에서 이번 변경과 CLEANUP.txt의 정리 목록을 확인한 후 Commit → Push origin을 진행하세요.
-이전에 dist가 이미 Git에 등록되어 있다면 git rm -r --cached --ignore-unmatch dist 명령으로 추적만 해제할 수 있습니다. 실제 dist 파일은 남습니다.
-변경 목록에 비밀키·.dev.vars·백업 JSON·node_modules가 포함되어 있으면 올리지 마세요.
-문제가 없음을 확인할 때까지 이전 백업은 보관하세요.
+배포 후 휴대폰에서 페이지를 새로고침하고 확인하세요.
+나무의 잎 사진 크게 보기 → 다음 사진 → 휴대폰 뒤로가기.
+사진만 닫히고 원래 화면과 작성한 글이 남아 있어야 합니다.
+다시 열고 닫기 버튼, 장소 사진 크게 보기도 같은 방식으로 확인하세요.
+이미 사진 파일만 열린 예전 창은 닫고 앱 주소에서 다시 시작해주세요.
 
-이번 ZIP은 프로젝트 파일 정리본이며, 사용자 PC나 GitHub 파일을 직접 삭제한 상태는 아닙니다.
+사진 보기 창이 닫힌 뒤의 뒤로가기는 평소 브라우저 동작을 따릅니다.
+앱 전체에서 뒤로가기를 막지는 않습니다.
+Firebase·지도·Worker 재설정이나 규칙 배포는 필요 없습니다.
+v44 이하에서는 아래 이전 적용 안내도 함께 반영하세요.
+
+아래는 이전 버전 안내입니다.
+
+v45 적용 안내 — 상단 로고 교체
+
+기존 프로젝트를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.
+public/brand/egmy-header-v45.png (새 파일)
+src/BrandLogo.jsx
+package.json / package-lock.json
+
+지정해주신 public-config.json은 그대로 유지했습니다.
+프로젝트 폴더에서 다음 명령을 실행하세요.
+npm run build
+firebase deploy --only hosting --project plant-book-84803
+
+상단 로고만 첨부 이미지로 교체합니다. 원본 1600×529 비율과 파일을 그대로 사용합니다.
+기록 카드·공유 이미지·캐릭터는 기존 이미지를 유지합니다.
+v43 이하에서는 아래 v44 적용 안내도 함께 반영하세요.
+
+아래는 v44 안내입니다.
+
+v44 적용 안내 — 나무 사진으로 고르기 · 파일 정리 · 쉬운 문구
+
+먼저 기존 프로젝트 전체를 다른 폴더에 복사해 백업하세요.
+
+v43에서 업데이트하는 순서
+1. 아래 파일을 같은 경로로 복사합니다.
+   src/TreeMapPanel.jsx
+   src/InstallPanel.jsx
+   src/DiscoveryBook.jsx
+   src/ExperiencePanel.jsx
+   src/styles.css
+   tests/tree-map-ui.test.mjs
+   tests/cleanup.test.mjs (새 파일)
+   cleanup.mjs (새 파일)
+   package.json / package-lock.json / .gitignore
+   public-config.json (지정해주신 설정 그대로 포함)
+2. 안내 파일도 새것으로 복사하세요.
+   START_HERE.txt / README.txt / USER_GUIDE.txt / CLEANUP.txt / BRAND_ASSETS.txt
+   docs/CHANGED_FILES.txt / docs/CONTENT_REVIEW.txt
+3. 기존 PC 폴더의 이전 파일을 확인합니다.
+   npm run cleanup
+   이 명령은 목록만 보여주며 파일을 지우지 않습니다.
+4. 백업하고 정리하려면 실행합니다.
+   npm run cleanup -- --apply
+   지정된 예전 파일만 backup-cleanup 아래에 복사한 뒤 지웁니다.
+   사진·설정·기록 데이터는 정리 대상이 아닙니다.
+5. 검사하고 배포합니다.
+   npm test
+   npm run build
+   firebase deploy --only hosting --project plant-book-84803
+
+계속 유지할 파일
+- src/experience-data.js / src/observation-places.js / src/place-guide-photos.js
+- 직접 추가한 식물·장소 사진, 현재 로고
+- backend/wrangler.jsonc / .firebaserc(있을 때) / .git
+- 직접 고친 소스는 새 내용과 비교해 합쳐주세요.
+
+현재 ZIP은 정리가 끝난 전체 프로젝트입니다.
+v42 이하를 사용 중이라면 새 폴더에 ZIP을 풀고 위 유지 파일을 옮긴 다음 npm ci를 실행하세요.
+이전 버전과 이번 버전 폴더를 섞어 사용하지 마세요.
+기존 Firebase·카카오·Worker 설정은 그대로 사용하며 새로 초기화하지 않습니다.
+
+사용 방법: USER_GUIDE.txt
+정리 대상과 백업 위치: CLEANUP.txt
+문구 점검 내역: docs/CONTENT_REVIEW.txt

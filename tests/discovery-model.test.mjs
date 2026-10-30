@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {summarizeDiscoveries,matchesObservation,savedDate} from '../src/discovery-model.js';
+import {summarizeDiscoveries,matchesObservation,savedDate,isUnnamedObservation,filterDiscoveries,sortObservations} from '../src/discovery-model.js';
 import {applyTextEdit} from '../src/cloud-model.js';
 const observation=(id,scientificName,createdAt=1000,patch={})=>({id,name:'소나무',centerName:'기관 A',description:'',createdAt,...(scientificName?{aiSelection:{provider:'plantnet',scientificName,commonName:'',score:.8,selectedAt:1}}:{}),...patch});
 test('same selected scientific name groups across institutions; manually entered names do not merge',()=>{
@@ -33,4 +33,30 @@ test('memo and institution edits preserve an unchanged candidate, while a change
  }
  const renamed=applyTextEdit(old,{name:'다시 확인할 식물'});assert.equal('aiSelection' in renamed,false);assert.equal(summarizeDiscoveries([renamed]).unclassifiedCount,1);
  const protectedFields=applyTextEdit(old,{ownerId:'attacker',aiSelection:{provider:'fake'}});assert.equal(protectedFields.ownerId,'owner');assert.deepEqual(protectedFields.aiSelection,old.aiSelection);
+});
+
+test('the unnamed filter recognizes only the explicit saved label and composes with institution search',()=>{
+ const rows=[observation('a',null,1,{name:'이름 모름',centerName:'장성'}),observation('b',null,2,{name:' 이름  모름 ',centerName:'다른 숲체원'}),observation('c',null,3,{name:'이름 모름이라고 적은 꽃'}),observation('d',null,4,{name:'소나무'}),observation('e',null,5,{name:''})];
+ const before=JSON.stringify(rows);assert.deepEqual(filterDiscoveries(rows,'','unnamed').map(r=>r.id),['a','b']);assert.deepEqual(filterDiscoveries(rows,'장성','unnamed').map(r=>r.id),['a']);assert.equal(filterDiscoveries(rows,'소나무','unnamed').length,0);assert.equal(filterDiscoveries(rows,'소나무','all').length,1);assert.equal(isUnnamedObservation(null),false);assert.equal(isUnnamedObservation({name:'미확인'}),false);assert.equal(JSON.stringify(rows),before);
+ const renamed=applyTextEdit(rows[0],{name:'편백나무'});assert.equal(isUnnamedObservation(renamed),false);assert.equal(renamed.description,rows[0].description);assert.equal(renamed.createdAt,rows[0].createdAt);assert.equal(summarizeDiscoveries([renamed]).candidateCount,0);
+});
+
+test('saved-date sorting is immutable, stable, and keeps missing dates at the end in both directions',()=>{
+ const rows=[{id:'new',createdAt:9},{id:'missing',createdAt:null},{id:'old',createdAt:1},{id:'same',createdAt:9},{id:'invalid',createdAt:NaN}];const before=rows.map(r=>r.id);
+ assert.deepEqual(sortObservations(rows).map(r=>r.id),['new','same','old','missing','invalid']);assert.deepEqual(sortObservations(rows,'oldest').map(r=>r.id),['old','new','same','missing','invalid']);assert.deepEqual(rows.map(r=>r.id),before);
+});
+
+test('name-source filtering uses saved candidate metadata and intersects unknown scope and search',()=>{
+ const rows=[observation('ai','Pinus densiflora',1,{centerName:'장성'}),observation('typed',null,2,{centerName:'장성'}),observation('old',null,3,{name:'이름 모름'}),observation('invalid',null,4,{aiSelection:{provider:'other',scientificName:'Pinus densiflora'}})];
+ const before=JSON.stringify(rows);
+ assert.deepEqual(filterDiscoveries(rows,'','all','ai').map(r=>r.id),['ai']);
+ assert.deepEqual(filterDiscoveries(rows,'','all','other').map(r=>r.id),['typed','old','invalid']);
+ assert.deepEqual(filterDiscoveries(rows,'장성','all','other').map(r=>r.id),['typed']);
+ assert.equal(filterDiscoveries(rows,'','unnamed','ai').length,0);
+ assert.deepEqual(filterDiscoveries(rows,'','unnamed','other').map(r=>r.id),['old']);
+ const renamed=applyTextEdit(rows[0],{name:'편백나무'});
+ assert.equal(filterDiscoveries([renamed],'','all','ai').length,0);
+ assert.equal(filterDiscoveries([renamed],'','all','other').length,1);
+ assert.equal(filterDiscoveries(rows,'','all','unexpected').length,4);
+ assert.equal(JSON.stringify(rows),before);
 });

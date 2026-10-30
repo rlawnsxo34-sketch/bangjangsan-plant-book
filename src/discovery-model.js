@@ -5,6 +5,19 @@ export function selectedCandidate(row){
  return localizeCandidate({scientificName:selected.scientificName,commonName:typeof selected.commonName==='string'?selected.commonName:''});
 }
 const time=value=>Number.isSafeInteger(value)&&value>0&&value<=8640000000000000?value:null;
+// This only recognizes the explicit saved label, not an AI confidence or review status.
+export function isUnnamedObservation(row){
+ return typeof row?.name==='string'&&row.name.normalize('NFC').replace(/\s+/g,'')==='이름모름';
+}
+export function filterDiscoveries(records,query,scope='all',nameSource='all'){
+ return (Array.isArray(records)?records:[]).filter(row=>(scope!=='unnamed'||isUnnamedObservation(row))&&(nameSource==='ai'?!!selectedCandidate(row):nameSource==='other'?!selectedCandidate(row):true)&&matchesObservation(row,query));
+}
+export function sortObservations(records,order='newest'){
+ return (Array.isArray(records)?records:[]).map((row,index)=>({row,index,stamp:time(row.createdAt)})).sort((a,b)=>{
+  if(a.stamp===null||b.stamp===null)return a.stamp===b.stamp?a.index-b.index:a.stamp===null?1:-1;
+  return (order==='oldest'?a.stamp-b.stamp:b.stamp-a.stamp)||a.index-b.index;
+ }).map(item=>item.row);
+}
 export function summarizeDiscoveries(records){
  const rows=Array.isArray(records)?records:[],groups=new Map(),unclassified=[];
  for(const row of rows){

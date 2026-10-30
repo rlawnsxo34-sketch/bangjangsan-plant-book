@@ -1,11 +1,12 @@
 import ObservationPlace from './ObservationPlace.jsx';
 import {observationPlaceNotice} from './observation-places.js';
 import TreePhotos from './TreePhotos.jsx';
+import VisitNoteFields from './VisitNoteFields.jsx';
 import React,{useEffect,useRef,useState} from 'react';
 import {experienceForSelection} from './candidate-experience.js';
 import {readableTree} from './easy-language.js';
 import {EXPERIENCE} from './experience-data.js';
-import {VISIT_NOTE_LIMIT,updateVisit} from './experience-model.js';
+import {updateVisit} from './experience-model.js';
 
 export default function CandidateExperience({selection,visit,onChange,onUseNote,disabled=false}){
  const original=experienceForSelection(selection);
@@ -24,8 +25,7 @@ function Guide({tree,visit,onChange,onUseNote,disabled}){
    <div className="tree-question"><span>직접 살펴봐요</span><p>{tree.question}</p></div>
    <ul>{tree.hints.map(hint=><li key={hint}>{hint}</li>)}</ul><p>{EXPERIENCE.safety}</p>
    <p className="experience-help">{observationPlaceNotice(visit.centerId,EXPERIENCE.locationNotice)} 사진을 올렸다는 것만으로 지금 이 숲에 있다는 뜻은 아니에요.</p>
-   <label className="visit-check"><input type="checkbox" disabled={disabled} checked={row.observed} onChange={e=>change({observed:e.target.checked})}/><span>이 나무를 살펴봤어요</span></label>
-   <label className="visit-note">내가 발견한 특징<textarea rows={3} disabled={disabled} maxLength={VISIT_NOTE_LIMIT} value={row.note} placeholder={tree.placeholder} onChange={e=>change({note:e.target.value})}/><span>{row.note.length}/{VISIT_NOTE_LIMIT}자</span></label>
+   <VisitNoteFields tree={tree} entry={row} onChange={change} disabled={disabled}/>
    <p className="experience-help">이 글은 ‘숲 둘러보기’의 메모와 이어져요. 새로고침·창 닫기·기관이나 계정 변경 시 지워져요. 사진 기록에도 남기려면 아래 버튼을 누른 뒤 ‘내 도감에 저장하기’를 눌러주세요. 살펴봤다는 표시는 자동으로 켜지지 않아요.</p>
    <button type="button" className="visit-secondary visit-wide" disabled={disabled||!row.note.trim()} onClick={()=>onUseNote(row.note.trim())}>이 글을 사진 기록에 넣기</button>
    <details className="tree-sources"><summary>설명을 참고한 자료 보기</summary><p>학명: {tree.scientificName} · 실제 식물 이름은 추가 확인이 필요해요.</p><ul>{tree.sources.map(source=><li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label} ↗</a></li>)}</ul></details>
