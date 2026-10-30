@@ -1,16 +1,20 @@
-v47 대비 v48 변경·추가 파일
+v48 대비 v49 변경·추가 파일
 README.txt
 START_HERE.txt
 dist/index.html
 firebase.json
 package-lock.json
 package.json
-src/ReferencePhotos.jsx
+src/CenterChooser.jsx
+src/CloudApp.jsx
+src/ExperiencePanel.jsx
+src/TreeMapPanel.jsx
 src/styles.css
+tests/experience-routing.test.mjs
+tests/experience-ui.test.mjs
 verification/current-checks.txt
 USER_GUIDE.txt
-src/PhotoViewer.jsx
-tests/candidate-photo-viewer.test.mjs
+docs/REFINED_UI.txt
 docs/CHANGED_FILES.txt
 
-설정·로고·원본 사진·서버·접근 규칙 유지.
+설정·로고·원본 사진·서버·접근 규칙 유지. QA 파일은 배포 ZIP에서 제외.

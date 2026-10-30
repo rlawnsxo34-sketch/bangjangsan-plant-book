@@ -17,7 +17,7 @@ function TreeChoice({tree,selected,disabled,onClick,showPlace=false}){
   <span><strong>{tree.name}</strong><small>{tree.feature}</small>{showPlace&&<small>{tree.label||'장소 안내 준비 중'}</small>}</span>
  </button>;
 }
-export default function TreeMapPanel({center,onState,onBack,initialTreeId,onTreeSelect,visitEntries={},onVisitChange,onViewRecords,Canvas=KakaoTreeCanvas,apiKey=config.kakaoMap?.javascriptKey||''}){
+export default function TreeMapPanel({center,onState,onBack,backLabel='나무 살펴보기로 돌아가기',initialTreeId,onTreeSelect,visitEntries={},onVisitChange,onViewRecords,Canvas=KakaoTreeCanvas,apiKey=config.kakaoMap?.javascriptKey||''}){
  const[rows,setRows]=useState([]),[user,setUser]=useState(null),[canEdit,setCanEdit]=useState(false),[loaded,setLoaded]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[opened,setOpened]=useState(false),[selectedOnly,setSelectedOnly]=useState(true),[attempt,setAttempt]=useState(0),[selected,setSelected]=useState(()=>EXPERIENCE.trees.some(t=>t.id===initialTreeId)?initialTreeId:EXPERIENCE.trees[0].id),[draft,setDraft]=useState(null),[consent,setConsent]=useState(false),[busy,setBusy]=useState(false);
  const rt=useRef(null),alive=useRef(false),epoch=useRef(0),currentUser=useRef(null),lock=useRef(false),detail=useRef(null);
  const trees=useMemo(()=>EXPERIENCE.trees.map(t=>mapTree(readableTree(t),center.id,rows)),[rows,center.id]),tree=trees.find(t=>t.id===selected)||trees[0];
@@ -61,6 +61,6 @@ export default function TreeMapPanel({center,onState,onBack,initialTreeId,onTree
    {draft&&canEdit&&<form className="tree-map-editor" aria-label="공개 나무 위치 선택" onSubmit={e=>{e.preventDefault();if(draft.coordinates&&consent)write(draft,draft.revision);}}><h4>{tree.name} 위치 고르기</h4><p>지도를 눌러 위치를 고른 뒤 공개해주세요.</p><label>장소 설명<input required maxLength={160} value={draft.label} disabled={busy} onChange={e=>{setDraft(d=>({...d,label:e.target.value}));setConsent(false);}}/></label><p role="status">{draft.coordinates?'위치를 골랐어요. 아직 저장하지 않았어요.':'지도에서 나무가 있는 곳을 눌러주세요.'}</p><label className="share-consent"><input type="checkbox" checked={consent} disabled={busy||!draft.coordinates} onChange={e=>setConsent(e.target.checked)}/><span>선택한 나무 위치와 장소 설명을 모든 방문객에게 공개하는 데 동의해요.</span></label><button type="submit" className="visit-primary visit-wide" disabled={busy||!draft.coordinates||!draft.label.trim()||!consent}>{busy?'저장 중…':'이 위치 공개하기'}</button><button type="button" className="visit-secondary visit-wide" disabled={busy} onClick={()=>{if(mayDiscard()){setDraft(null);setConsent(false);}}}>위치 선택 취소</button></form>}
   </div></div>
   {!user&&<details className="capture-help"><summary>담당자 안내</summary><p>내 도감에서 로그인하면 담당자 권한으로 나무 위치를 등록할 수 있어요.</p></details>}
-  <button type="button" className="visit-secondary visit-wide" disabled={busy} onClick={()=>{if(mayDiscard())onBack();}}>나무 살펴보기로 돌아가기</button>
+  <button type="button" className="visit-secondary visit-wide" disabled={busy} onClick={()=>{if(mayDiscard())onBack();}}>{backLabel}</button>
  </section>;
 }

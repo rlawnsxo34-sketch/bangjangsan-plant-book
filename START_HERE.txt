@@ -1,3 +1,41 @@
+v49 적용 안내 — 나무 지도 연결과 화면 정돈
+
+기존 프로젝트 전체를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.
+src/CloudApp.jsx
+src/ExperiencePanel.jsx
+src/TreeMapPanel.jsx
+src/CenterChooser.jsx
+src/styles.css
+tests/experience-routing.test.mjs
+tests/experience-ui.test.mjs
+package.json / package-lock.json
+START_HERE.txt / README.txt / USER_GUIDE.txt
+
+사용자가 지정한 public-config.json, 현재 로고·사진·기관 설정은 유지했습니다.
+직접 고친 소스는 변경 내용을 비교해 합쳐주세요.
+프로젝트 폴더에서 순서대로 실행합니다.
+npm test
+npm run build
+firebase deploy --only hosting --project plant-book-84803
+
+확인할 내용
+1. 식물 찾기와 내 도감 위쪽에 나무 지도 보기 버튼이 있습니다.
+2. 사진·이름을 입력한 뒤 지도를 열었다 돌아와도 작성 내용이 유지됩니다.
+3. 내 도감의 목록·검색 필터도 지도에서 돌아오면 유지됩니다.
+4. 다른 이름과 설명 자료 보기, 이 숲체원의 체험 주소 나누기 영역은 제거했습니다.
+   함께 보기의 공유 신청·공개 목록은 그대로 사용합니다.
+5. 휴대폰과 PC에서 버튼·카드·색상·글줄이 새 스타일로 바뀝니다.
+
+지도는 현재 선택한 숲체원의 공개 나무 위치를 안내합니다.
+내 사진의 개인 좌표를 자동으로 공개하거나 나무 위치로 옮기지 않습니다.
+담당자가 지도를 수정 중이면 이동 전에 저장하지 않은 위치 선택을 확인합니다.
+Firebase·Worker·규칙을 새로 설정하거나 다시 배포할 필요는 없습니다.
+v47 이하라면 아래 이전 버전의 변경 파일도 함께 반영하세요.
+새 폴더에 전체 ZIP을 풀 경우 기존 기관·장소 설정과 직접 추가한 자료를 옮긴 뒤 npm ci를 실행하세요.
+
+상세 설명: USER_GUIDE.txt / docs/REFINED_UI.txt
+아래는 이전 버전 안내입니다.
+
 v48 적용 안내 — AI 후보 사진 크게 비교하기
 
 기존 프로젝트를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.

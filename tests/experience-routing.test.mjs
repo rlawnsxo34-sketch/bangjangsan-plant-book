@@ -23,6 +23,27 @@ function setup(search){const subscribers=new Set(),events=new Map();let user=nul
 function label(value){return typeof value==='string'?value:Array.isArray(value)?value.map(label).join(''):value?.props?label(value.props.children):'';}
 function button(root,text){return root.root.findAllByType('button').find(b=>label(b.props.children)===text);}
 async function mount(){let root;await act(async()=>{root=create(React.createElement(App));await new Promise(r=>setImmediate(r));});return root;}
+test('capture and book offer the public tree map without losing the photo draft or resetting the active book filters',async()=>{
+ const env=setup('?center=jangseong');globalThis.indexedDB=new IDBFactory();let writes=0,placeReads=0;
+ globalThis.__runtime.repo={list:async()=>[{id:'unknown',name:'이름 모름',centerId:'jangseong',centerName:'국립장성숲체원',createdAt:1,description:''}],add:async()=>writes++};
+ globalThis.__runtime.places={list:async()=>{placeReads++;return [];}};globalThis.__runtime.sharing.grants=async()=>[];
+ window.plantPhotoFlow={preparePhoto:async()=>({}),createLatestTask:()=>({cancel(){},begin(){return {signal:new AbortController().signal,isCurrent:()=>true};}})};
+ let root;try{
+  root=await mount();await act(async()=>env.auth({uid:'map-owner',email:'map@example.test'}));await act(async()=>button(root,'식물 찾기').props.onClick());
+  for(let i=0;i<4;i++)await act(async()=>new Promise(r=>setTimeout(r,15)));
+  const name=()=>root.root.findAllByType('input').find(i=>i.props.placeholder==='이름 모름으로 저장할 수 있습니다');
+  await act(async()=>root.root.findByProps({'aria-label':'계정 앨범 사진 선택'}).props.onChange({target:{files:[{}],value:''}}));await act(async()=>name().props.onChange({target:{value:'기록 중인 나무'}}));
+  await act(async()=>button(root,'나무 지도 보기').props.onClick());assert.equal(root.root.findByProps({className:'account-content'}).props.hidden,true);assert.ok(button(root,'식물 찾기로 돌아가기'));assert.equal(writes,0);
+  await act(async()=>button(root,'식물 찾기로 돌아가기').props.onClick());assert.equal(root.root.findByProps({className:'account-content'}).props.hidden,false);assert.equal(name().props.value,'기록 중인 나무');assert.equal(root.root.findByProps({'aria-label':'저장할 사진 목록'}).findAllByType('img').length,1);
+  await act(async()=>button(root,'내 도감').props.onClick());await act(async()=>root.root.findByProps({'aria-label':'내 도감 기록 고르기'}).findAllByType('button')[1].props.onClick());
+  await act(async()=>button(root,'나무 지도 보기').props.onClick());assert.ok(button(root,'내 도감으로 돌아가기'));await act(async()=>button(root,'내 도감으로 돌아가기').props.onClick());assert.equal(root.root.findByProps({'aria-label':'내 도감 기록 고르기'}).findAllByType('button')[1].props['aria-pressed'],true);assert.equal(writes,0);assert.equal(placeReads,2);
+ }finally{if(root)await act(async()=>root.unmount());}
+});
+test('tree map is available before login and the primary navigation still has four tabs',async()=>{
+ setup('?center=jangseong');globalThis.__runtime.places={list:async()=>[]};let root;try{
+  root=await mount();await act(async()=>button(root,'식물 찾기').props.onClick());await act(async()=>button(root,'나무 지도 보기').props.onClick());assert.ok(root.root.findByProps({'aria-label':'나무 지도'}));assert.equal(root.root.findByProps({'aria-label':'주요 메뉴'}).findAllByType('button').length,4);await act(async()=>button(root,'식물 찾기로 돌아가기').props.onClick());assert.equal(root.root.findAllByProps({type:'password'}).length,1);
+ }finally{if(root)await act(async()=>root.unmount());}
+});
 test('saved record opens its photo editor, asks before discarding changes and refreshes after an explicit save',async()=>{
  const env=setup('?center=jangseong');globalThis.indexedDB=new IDBFactory();let writes=0;
  const photo=n=>'data:image/jpeg;base64,'+Buffer.from([255,216,n,255,217]).toString('base64');

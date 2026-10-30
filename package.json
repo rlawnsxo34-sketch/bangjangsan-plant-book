@@ -1,6 +1,6 @@
 {
-  "name": "forest-book-candidate-photos-dev",
-  "version": "48.0.0",
+  "name": "forest-book-refined-ui-dev",
+  "version": "49.0.0",
   "private": true,
   "type": "module",
   "scripts": {
