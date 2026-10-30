@@ -1,12 +1,12 @@
 {
-  "name": "forest-book-photo-back-dev",
-  "version": "46.0.0",
+  "name": "forest-book-candidate-photos-dev",
+  "version": "48.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
     "preview": "node preview.mjs",
-    "test": "node --test tests/local-store.test.mjs tests/photo-flow.test.cjs tests/cloud-model.test.mjs tests/korean-names.test.mjs tests/reference-images.test.mjs tests/center-model.test.mjs tests/discovery-model.test.mjs tests/install-controller.test.mjs tests/draft-store.test.mjs tests/account-draft.test.mjs tests/experience-model.test.mjs tests/experience-ui.test.mjs tests/experience-routing.test.mjs tests/easy-language.test.mjs tests/record-card.test.mjs tests/record-card-ui.test.mjs tests/candidate-experience.test.mjs tests/record-photos.test.mjs tests/photo-editor.test.mjs tests/share-photos.test.mjs tests/sharing-ui.test.mjs tests/experience-photos.test.mjs tests/observation-places.test.mjs tests/place-map-ui.test.mjs tests/tree-map.test.mjs tests/tree-map-ui.test.mjs tests/kakao-loader.test.mjs tests/kakao-canvas.test.mjs tests/map-csp.test.mjs tests/place-guide-photos.test.mjs tests/guest-handoff.test.mjs tests/identify-feedback.test.mjs tests/discovery-book-ui.test.mjs tests/cleanup.test.mjs tests/photo-history.test.mjs tests/photo-viewer.test.mjs",
+    "test": "node --test tests/local-store.test.mjs tests/photo-flow.test.cjs tests/cloud-model.test.mjs tests/korean-names.test.mjs tests/reference-images.test.mjs tests/center-model.test.mjs tests/discovery-model.test.mjs tests/install-controller.test.mjs tests/draft-store.test.mjs tests/account-draft.test.mjs tests/experience-model.test.mjs tests/experience-ui.test.mjs tests/experience-routing.test.mjs tests/easy-language.test.mjs tests/record-card.test.mjs tests/record-card-ui.test.mjs tests/candidate-experience.test.mjs tests/record-photos.test.mjs tests/photo-editor.test.mjs tests/share-photos.test.mjs tests/sharing-ui.test.mjs tests/experience-photos.test.mjs tests/observation-places.test.mjs tests/place-map-ui.test.mjs tests/tree-map.test.mjs tests/tree-map-ui.test.mjs tests/kakao-loader.test.mjs tests/kakao-canvas.test.mjs tests/map-csp.test.mjs tests/place-guide-photos.test.mjs tests/guest-handoff.test.mjs tests/identify-feedback.test.mjs tests/discovery-book-ui.test.mjs tests/cleanup.test.mjs tests/photo-history.test.mjs tests/photo-viewer.test.mjs tests/album-viewer.test.mjs tests/candidate-photo-viewer.test.mjs",
     "test:rules": "firebase emulators:exec --config firebase.emulators.json --project demo-forest-book --only auth,firestore \"node --test --test-concurrency=1 tests/security-rules.test.mjs tests/sharing-rules.test.mjs tests/runtime-emulator.test.mjs tests/tree-map-rules.test.mjs\"",
     "cleanup": "node cleanup.mjs"
   },

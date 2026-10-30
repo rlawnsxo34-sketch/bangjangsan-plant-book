@@ -1,3 +1,64 @@
+v48 적용 안내 — AI 후보 사진 크게 비교하기
+
+기존 프로젝트를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.
+src/ReferencePhotos.jsx
+src/PhotoViewer.jsx
+src/styles.css
+tests/candidate-photo-viewer.test.mjs (새 파일)
+package.json / package-lock.json
+
+public-config.json과 현재 로고·식물 사진·개인 설정은 그대로 유지했습니다.
+프로젝트 폴더에서 다음 명령을 순서대로 실행하세요.
+npm test
+npm run build
+firebase deploy --only hosting --project plant-book-84803
+
+휴대폰 확인 방법
+1. 식물 찾기에서 사진을 고르고 전송에 동의한 뒤 이름을 찾습니다.
+2. 후보의 비교 사진에서 크게 비교하기를 누릅니다.
+3. 사진이 2장이면 이전·다음 사진으로 비교합니다.
+4. 뒤로가기를 누르면 사진만 닫히고 후보 목록으로 돌아와야 합니다.
+5. 원하는 이름은 이 이름 고르기를 눌러 직접 선택합니다.
+사진 확대만으로 이름을 고르거나 기록을 저장하지는 않습니다.
+원본이 열리지 않으면 미리보기 사진을 보여주고, 둘 다 실패하면 닫고 계속할 수 있습니다.
+
+Firebase·Worker·접근 규칙을 다시 설정하거나 배포할 필요는 없습니다.
+v46 이하라면 아래 v47까지의 공통 사진 보기 파일도 함께 반영하세요.
+
+아래는 이전 버전 안내입니다.
+
+v47 적용 안내 — 내 도감·공유 사진 크게 보기
+
+기존 프로젝트 전체를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.
+src/RecordPhotos.jsx
+src/SharedPhotos.jsx
+src/usePhotoPreview.jsx (새 파일)
+src/dialog.jsx
+src/styles.css
+tests/album-viewer.test.mjs (새 파일)
+package.json / package-lock.json
+
+주신 public-config.json과 현재 상단 로고·캐릭터·식물 사진은 유지했습니다.
+프로젝트 폴더에서 실행하세요.
+npm test
+npm run build
+firebase deploy --only hosting --project plant-book-84803
+
+v45 이하에서는 아래 v46의 큰 사진 보기 파일도 함께 반영해야 합니다.
+Firebase·Worker·접근 규칙을 다시 설정하거나 배포할 필요는 없습니다.
+
+배포 후 휴대폰 확인
+1. 내 도감에서 사진이 2~3장인 기록을 엽니다.
+2. 추가사진의 크게 보기를 누르고 이전·다음 사진으로 비교합니다.
+3. 휴대폰 뒤로가기를 누릅니다. 사진 창만 닫히고 기록 상세창이 남아야 합니다.
+4. 함께 보기의 공개 사진에서도 같은 순서로 확인합니다.
+5. PC에서는 Esc 키로 큰 사진만 닫히는지 확인합니다.
+
+다른 사람에게 공개되는 사진 수는 기존 공유 신청 때 고른 사진 그대로입니다.
+큰 사진 보기가 저장·수정·공개 신청을 자동으로 하지는 않습니다.
+
+아래는 이전 버전 안내입니다.
+
 v46 적용 안내 — 크게 본 사진에서 뒤로가기
 
 기존 프로젝트를 백업한 뒤 아래 파일을 같은 경로로 복사하세요.

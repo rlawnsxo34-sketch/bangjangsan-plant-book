@@ -1,21 +1,16 @@
-v45 대비 v46 변경·추가 파일
+v47 대비 v48 변경·추가 파일
 README.txt
 START_HERE.txt
 dist/index.html
 firebase.json
 package-lock.json
 package.json
-src/PlaceGuidePhoto.jsx
-src/TreePhotos.jsx
+src/ReferencePhotos.jsx
 src/styles.css
-tests/experience-ui.test.mjs
-tests/place-guide-photos.test.mjs
 verification/current-checks.txt
 USER_GUIDE.txt
-src/photo-history.js
 src/PhotoViewer.jsx
-tests/photo-history.test.mjs
-tests/photo-viewer.test.mjs
+tests/candidate-photo-viewer.test.mjs
 docs/CHANGED_FILES.txt
 
-설정·로고·사진·서버·접근 규칙 유지.
+설정·로고·원본 사진·서버·접근 규칙 유지.
